@@ -235,6 +235,16 @@
       animation-delay: calc(var(--i) * -170ms);
     }
 
+    .memory-launcher-art {
+      display: block;
+      width: 56px;
+      height: 60px;
+      object-fit: contain;
+      transform-origin: 50% 75%;
+      animation: icon-breathe 4.5s ease-in-out infinite;
+      animation-delay: calc(var(--i) * -170ms);
+    }
+
     .brand-art {
       position: relative;
       isolation: isolate;
@@ -281,10 +291,22 @@
     }
 
     .app:hover .app-art,
-    .app:hover .brand-art { animation-play-state: paused; transform: translateY(-3px) rotate(-2deg) scale(1.05); }
+    .app:hover .brand-art,
+    .app:hover .memory-launcher-art { animation-play-state: paused; transform: translateY(-3px) rotate(-2deg) scale(1.05); }
     .app:active .app-art,
-    .app:active .brand-art { transform: translateY(2px) scale(.9, 1.08); }
+    .app:active .brand-art,
+    .app:active .memory-launcher-art { transform: translateY(2px) scale(.9, 1.08); }
     .app:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; border-radius: 16px; }
+
+    .app.placeholder {
+      cursor: default;
+      filter: grayscale(.92);
+      opacity: .28;
+    }
+
+    .app.placeholder .app-art { animation: none; }
+    .app.placeholder:hover .app-art,
+    .app.placeholder:active .app-art { transform: none; }
 
     .p00 { background-position: 4.62% 4.37%; } .p10 { background-position: 34.84% 4.37%; }
     .p20 { background-position: 66.56% 4.37%; } .p30 { background-position: 97.1% 4.37%; }
@@ -1415,23 +1437,23 @@
                 <span class="brand-art brand-instagram" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.45" cy="6.65" r="1.15" fill="currentColor" stroke="none"/></svg></span>
               </button>
               <button class="app" style="--i:2" data-name="Maps" data-pos="p20" aria-label="Open Maps"><span class="app-art p20"></span></button>
-              <button class="app" style="--i:3" data-name="Photos" data-pos="p30" aria-label="Open Photos"><span class="app-art p30"></span></button>
-              <button class="app" style="--i:4" data-name="Music" data-pos="p01" aria-label="Open Music"><span class="app-art p01"></span></button>
-              <button class="app" style="--i:5" data-name="Video" data-pos="p11" aria-label="Open Video"><span class="app-art p11"></span></button>
-              <button class="app" style="--i:6" data-name="Messages" data-pos="p21" aria-label="Open Messages"><span class="app-art p21"></span></button>
-              <button class="app" style="--i:7" data-name="Mail" data-pos="p31" aria-label="Open Mail"><span class="app-art p31"></span></button>
-              <button class="app" style="--i:8" data-name="Camera" data-pos="p02" aria-label="Open Camera"><span class="app-art p02"></span></button>
-              <button class="app" style="--i:9" data-name="Calculator" data-pos="p12" aria-label="Open Calculator"><span class="app-art p12"></span></button>
-              <button class="app" style="--i:10" data-name="Clock" data-pos="p22" aria-label="Open Clock"><span class="app-art p22"></span></button>
-              <button class="app" style="--i:11" data-name="Calendar" data-pos="p32" aria-label="Open Calendar"><span class="app-art p32"></span></button>
-              <button class="app" style="--i:12" data-name="Settings" data-pos="p03" aria-label="Open Settings"><span class="app-art p03"></span></button>
-              <button class="app" style="--i:13" data-name="Memory Box" data-pos="p13" aria-label="Open Memory Box"><span class="app-art p13"></span></button>
-              <button class="app" style="--i:14" data-name="Weather" data-pos="p23" aria-label="Open Weather"><span class="app-art p23"></span></button>
-              <button class="app" style="--i:15" data-name="Notes" data-pos="p33" aria-label="Open Notes"><span class="app-art p33"></span></button>
-              <button class="app" style="--i:16" data-name="Phone" data-pos="p04" aria-label="Open Phone"><span class="app-art p04"></span></button>
-              <button class="app" style="--i:17" data-name="Browser" data-pos="p14" aria-label="Open Browser"><span class="app-art p14"></span></button>
-              <button class="app" style="--i:18" data-name="Wallet" data-pos="p24" aria-label="Open Wallet"><span class="app-art p24"></span></button>
-              <button class="app" style="--i:19" data-name="Sounds" data-pos="p34" aria-label="Open Sounds"><span class="app-art p34"></span></button>
+              <button class="app placeholder" style="--i:3" data-name="Photos" data-pos="p30" aria-label="Photos — coming soon" disabled><span class="app-art p30"></span></button>
+              <button class="app placeholder" style="--i:4" data-name="Music" data-pos="p01" aria-label="Music — decorative" disabled><span class="app-art p01"></span></button>
+              <button class="app placeholder" style="--i:5" data-name="Video" data-pos="p11" aria-label="Video — decorative" disabled><span class="app-art p11"></span></button>
+              <button class="app placeholder" style="--i:6" data-name="Messages" data-pos="p21" aria-label="Messages — decorative" disabled><span class="app-art p21"></span></button>
+              <button class="app placeholder" style="--i:7" data-name="Mail" data-pos="p31" aria-label="Mail — decorative" disabled><span class="app-art p31"></span></button>
+              <button class="app placeholder" style="--i:8" data-name="Camera" data-pos="p02" aria-label="Camera — decorative" disabled><span class="app-art p02"></span></button>
+              <button class="app placeholder" style="--i:9" data-name="Calculator" data-pos="p12" aria-label="Calculator — decorative" disabled><span class="app-art p12"></span></button>
+              <button class="app placeholder" style="--i:10" data-name="Clock" data-pos="p22" aria-label="Clock — decorative" disabled><span class="app-art p22"></span></button>
+              <button class="app placeholder" style="--i:11" data-name="Calendar" data-pos="p32" aria-label="Calendar — decorative" disabled><span class="app-art p32"></span></button>
+              <button class="app placeholder" style="--i:12" data-name="Settings" data-pos="p03" aria-label="Settings — decorative" disabled><span class="app-art p03"></span></button>
+              <button class="app" style="--i:13" data-name="Memory Box" aria-label="Open Memory Box"><img class="memory-launcher-art" src="assets/memory-box-icon.png" alt=""></button>
+              <button class="app placeholder" style="--i:14" data-name="Weather" data-pos="p23" aria-label="Weather — decorative" disabled><span class="app-art p23"></span></button>
+              <button class="app placeholder" style="--i:15" data-name="Notes" data-pos="p33" aria-label="Notes — decorative" disabled><span class="app-art p33"></span></button>
+              <button class="app placeholder" style="--i:16" data-name="Phone" data-pos="p04" aria-label="Phone — decorative" disabled><span class="app-art p04"></span></button>
+              <button class="app placeholder" style="--i:17" data-name="Browser" data-pos="p14" aria-label="Browser — decorative" disabled><span class="app-art p14"></span></button>
+              <button class="app placeholder" style="--i:18" data-name="Wallet" data-pos="p24" aria-label="Wallet — decorative" disabled><span class="app-art p24"></span></button>
+              <button class="app placeholder" style="--i:19" data-name="Sounds" data-pos="p34" aria-label="Sounds — decorative" disabled><span class="app-art p34"></span></button>
             </nav>
 
             <section class="spotify-card" id="spotifyCard" aria-label="Spotify now playing">
@@ -1566,7 +1588,7 @@
           <div>
             <div class="maps-empty-art" aria-hidden="true"></div>
             <h2 data-map-empty-title>Wake up your paths</h2>
-            <p data-map-empty-copy>Your places live in the Memory Box. Connect your archive folder there and this map will remember where the day went.</p>
+            <p data-map-empty-copy>Your places live in the Memory Box. Connect the folder containing your archive, Timeline file, or export ZIPs there and this map will remember where the day went.</p>
             <button class="maps-import" type="button" data-open-memory>
               <span>Open the Memory Box</span>
             </button>
@@ -1617,9 +1639,9 @@
             </svg>
           </div>
           <h2 class="memory-headline" data-memory-headline>Bring your archive home</h2>
-          <p class="memory-copy" data-memory-copy>Choose the folder holding your exports. The zip files can stay exactly as they downloaded — nothing is unpacked, uploaded, or copied. This phone just reads them where they sit.</p>
+          <p class="memory-copy" data-memory-copy>Choose the folder containing your prebuilt archive, Timeline file, or downloaded export ZIPs. Nothing is unpacked, uploaded, or copied — this phone reads every file where it sits.</p>
           <button class="memory-connect" type="button" data-memory-connect>
-            <span aria-hidden="true">❑</span><span data-memory-connect-label>Choose archive folder</span>
+            <span aria-hidden="true">❑</span><span data-memory-connect-label>Choose source folder</span>
             <input type="file" data-memory-fallback-input hidden webkitdirectory directory multiple>
           </button>
         </div>
@@ -3337,7 +3359,7 @@
         if (!this.busy) {
           this.connectLabel.textContent = waiting
             ? `Reconnect ${pendingFolderHandle.name}`
-            : connected ? 'Choose a different folder' : 'Choose archive folder';
+            : connected ? 'Choose a different folder' : 'Choose source folder';
         }
 
         this.headline.textContent = connected ? 'Your archive is here' : 'Bring your archive home';
@@ -3345,7 +3367,7 @@
           ? 'These are the memories this phone can reach. Choose a day in Windback and open an app to visit it.'
           : waiting
             ? 'This phone remembers your folder but needs your permission again to read it.'
-            : 'Choose the folder holding your exports. The zip files can stay exactly as they downloaded — nothing is unpacked, uploaded, or copied. This phone just reads them where they sit.';
+            : 'Choose the folder containing your prebuilt archive, Timeline file, or downloaded export ZIPs. Nothing is unpacked, uploaded, or copied — this phone reads every file where it sits.';
 
         this.folder.hidden = !connected;
         if (connected) this.path.textContent = archiveSource.name;
@@ -3543,7 +3565,7 @@
 
       if (kind === 'disconnected') {
         heading.textContent = 'Nothing connected yet';
-        copy.textContent = 'Your conversations live in the Memory Box. Connect your archive folder and this day will fill itself in.';
+        copy.textContent = 'Your conversations live in the Memory Box. Connect the folder containing your archive or export ZIPs and this day will fill itself in.';
         const button = document.createElement('button');
         button.type = 'button';
         button.textContent = 'Open the Memory Box';
