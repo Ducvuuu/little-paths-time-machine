@@ -407,134 +407,215 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2px 5px 5px;
+      padding: 0 3px 4px;
     }
 
-    .time-orbit {
-      position: relative;
-      width: 246px;
-      min-height: 235px;
-      display: grid;
-      place-items: center;
-      text-align: center;
+    .calendar-intro {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin: -2px 0 10px;
+      padding: 0 7px;
     }
 
-    .time-orbit::before,
-    .time-orbit::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      background: #20243a;
-      z-index: -1;
-    }
-
-    .time-orbit::before { width: 232px; height: 232px; }
-    .time-orbit::after { width: 178px; height: 178px; background: #292d43; }
-
-    .orbit-dot {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--dot);
-      animation: orbit-dot 8s ease-in-out infinite;
-    }
-
-    .orbit-dot.a { --dot: var(--yellow); left: 18px; top: 84px; }
-    .orbit-dot.b { --dot: var(--lavender); right: 26px; top: 30px; animation-delay: -2.5s; }
-    .orbit-dot.c { --dot: var(--coral); right: 10px; bottom: 46px; animation-delay: -5s; }
-
-    @keyframes orbit-dot {
-      0%, 100% { transform: translateY(0) scale(.8); }
-      50% { transform: translateY(-6px) scale(1.15); }
-    }
-
-    .windback-hero-icon {
-      width: 108px;
-      height: 108px;
+    .windback-mini-icon {
+      width: 55px;
+      height: 55px;
+      flex: none;
       object-fit: contain;
-      transition: transform 360ms cubic-bezier(.2,.8,.2,1);
+      transition: transform 330ms cubic-bezier(.2,.8,.2,1);
     }
 
-    .windback-hero-icon.turning { transform: rotate(-24deg) scale(.9); }
-    .chosen-label { margin-top: -4px; color: var(--yellow); font-size: 9px; font-weight: 850; letter-spacing: .15em; }
-    .chosen-date { width: 220px; margin-top: 5px; color: var(--cream); font-size: 19px; line-height: 1.2; font-weight: 850; }
+    .windback-mini-icon.turning { transform: rotate(-24deg) scale(.9); }
+    .calendar-intro-copy { min-width: 0; }
+    .calendar-kicker { color: var(--yellow); font-size: 9px; font-weight: 850; letter-spacing: .14em; }
+    .calendar-intro-title { margin-top: 3px; color: var(--cream); font-size: 14px; line-height: 1.25; font-weight: 800; }
+    .calendar-intro-sub { margin-top: 2px; color: var(--muted); font-size: 9.5px; line-height: 1.35; }
 
-    .date-steps {
+    .calendar-shell {
+      position: relative;
       width: 100%;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 7px;
-      margin-top: 4px;
-    }
-
-    .date-step {
-      min-height: 54px;
-      border: 0;
-      border-radius: 18px 15px 19px 14px;
-      background: var(--step);
-      color: var(--ink);
-      cursor: pointer;
-      font-size: 11px;
-      line-height: 1.15;
-      font-weight: 850;
-      transition: transform 150ms ease;
-    }
-
-    .date-step:nth-child(1) { --step: var(--blue); }
-    .date-step:nth-child(2) { --step: var(--sage); transform: rotate(1deg); }
-    .date-step:nth-child(3) { --step: var(--yellow); transform: rotate(-1deg); }
-    .date-step:nth-child(4) { --step: var(--lavender); }
-    .date-step:hover { transform: translateY(-2px) rotate(-1deg); }
-    .date-step:active { transform: translateY(2px) scale(.93); }
-    .date-step small { display: block; margin-top: 3px; font-size: 8px; opacity: .68; }
-
-    .time-slider-card {
-      width: 100%;
-      margin-top: 13px;
-      padding: 13px 14px 14px;
-      border-radius: 20px;
+      padding: 14px 13px 13px;
+      overflow: hidden;
+      border-radius: 27px 23px 29px 22px;
       background: var(--card);
     }
 
-    .slider-label { display: flex; justify-content: space-between; color: var(--muted); font-size: 9px; font-weight: 750; }
-
-    .time-slider {
-      width: 100%;
-      height: 24px;
-      margin: 8px 0 2px;
-      appearance: none;
-      background: transparent;
-      cursor: ew-resize;
+    .calendar-nav {
+      display: grid;
+      grid-template-columns: 35px 1fr 35px;
+      align-items: center;
+      gap: 7px;
     }
 
-    .time-slider::-webkit-slider-runnable-track { height: 7px; border-radius: 7px; background: #343950; }
-    .time-slider::-webkit-slider-thumb {
-      width: 24px;
-      height: 24px;
-      margin-top: -8px;
-      appearance: none;
-      border: 5px solid var(--yellow);
-      border-radius: 50%;
-      background: var(--coral);
-    }
-
-    .time-slider::-moz-range-track { height: 7px; border: 0; border-radius: 7px; background: #343950; }
-    .time-slider::-moz-range-thumb { width: 15px; height: 15px; border: 5px solid var(--yellow); border-radius: 50%; background: var(--coral); }
-
-    .windback-actions { width: 100%; display: grid; grid-template-columns: 1fr 1.25fr; gap: 8px; margin-top: 12px; }
-    .windback-actions button {
-      min-height: 42px;
+    .month-arrow,
+    .month-button {
       border: 0;
-      border-radius: 16px;
+      color: var(--cream);
+      cursor: pointer;
+    }
+
+    .month-arrow {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #353a51;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .month-arrow:disabled { opacity: .25; cursor: default; }
+    .month-arrow:not(:disabled):active { transform: scale(.88); }
+
+    .month-button {
+      min-height: 38px;
+      border-radius: 16px 19px 15px 18px;
+      background: #30354c;
+      line-height: 1.1;
+    }
+
+    .month-name { display: block; font-size: 16px; font-weight: 850; }
+    .month-year { display: block; margin-top: 3px; color: var(--yellow); font-size: 9px; font-weight: 800; letter-spacing: .12em; }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+    }
+
+    .calendar-weekdays { gap: 4px; margin-top: 13px; }
+    .calendar-weekdays span { color: #8f94aa; text-align: center; font-size: 8px; font-weight: 850; letter-spacing: .06em; }
+
+    .calendar-grid {
+      gap: 5px 4px;
+      margin-top: 7px;
+      transform-origin: 18% 50%;
+    }
+
+    .calendar-grid.turning { animation: page-turn 260ms ease; }
+
+    @keyframes page-turn {
+      0% { opacity: .28; transform: translateX(9px) rotate(1deg); }
+      100% { opacity: 1; transform: translateX(0) rotate(0); }
+    }
+
+    .calendar-day {
+      position: relative;
+      height: 37px;
+      border: 0;
+      border-radius: 13px 11px 14px 10px;
+      background: #30354a;
+      color: #dddccc;
       cursor: pointer;
       font-size: 11px;
-      font-weight: 850;
+      font-weight: 800;
     }
 
-    .exact-date { background: #31364d; color: var(--cream); }
-    .set-day { background: var(--coral); color: #24283a; }
-    .windback-actions button:active { transform: scale(.95); }
+    .calendar-day:nth-child(3n) { border-radius: 10px 14px 11px 14px; }
+    .calendar-day:nth-child(4n) { transform: rotate(.6deg); }
+    .calendar-day.other-month { color: #666b82; background: #292d42; }
+    .calendar-day:disabled { opacity: .22; cursor: default; }
+    .calendar-day:not(:disabled):hover { background: #3a4058; transform: translateY(-1px) rotate(-1deg); }
+    .calendar-day.selected { background: var(--coral); color: #25293b; border-radius: 50% 44% 48% 42%; transform: rotate(-2deg); }
+    .calendar-day.today:not(.selected) { color: var(--yellow); }
+
+    .memory-dots {
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      display: flex;
+      gap: 2px;
+      transform: translateX(-50%);
+    }
+
+    .memory-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--memory-color); }
+    .memory-dot.messages { --memory-color: var(--blue); }
+    .memory-dot.instagram { --memory-color: var(--lavender); }
+    .memory-dot.maps { --memory-color: var(--sage); }
+    .memory-dot.photos { --memory-color: var(--yellow); }
+
+    .calendar-legend {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 10px;
+      color: #8f94aa;
+      font-size: 8px;
+    }
+
+    .legend-item { display: inline-flex; align-items: center; gap: 3px; }
+    .legend-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--legend-color); }
+    .legend-dot.messages { --legend-color: var(--blue); }
+    .legend-dot.instagram { --legend-color: var(--lavender); }
+    .legend-dot.maps { --legend-color: var(--sage); }
+    .legend-dot.photos { --legend-color: var(--yellow); }
+
+    .calendar-jumps { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 11px; }
+    .calendar-jumps button {
+      min-height: 37px;
+      border: 0;
+      border-radius: 15px;
+      background: #31364d;
+      color: var(--cream);
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .calendar-jumps button:active { transform: scale(.95); }
+
+    .calendar-choice {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 11px;
+      margin-top: 11px;
+      padding: 11px 12px 11px 15px;
+      border-radius: 20px 17px 22px 18px;
+      background: #30354a;
+    }
+
+    .chosen-label { color: var(--yellow); font-size: 8px; font-weight: 850; letter-spacing: .13em; }
+    .chosen-date { max-width: 178px; margin-top: 4px; color: var(--cream); font-size: 12px; line-height: 1.25; font-weight: 800; }
+    .set-day {
+      min-height: 43px;
+      max-width: 112px;
+      border: 0;
+      border-radius: 16px 14px 18px 13px;
+      padding: 0 13px;
+      background: var(--coral);
+      color: #24283a;
+      cursor: pointer;
+      font-size: 10px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .set-day:active { transform: scale(.94); }
+
+    .year-panel {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 18px 16px;
+      background: var(--card);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 180ms ease, transform 220ms ease, visibility 0s linear 220ms;
+    }
+
+    .year-panel.open { visibility: visible; opacity: 1; transform: translateY(0); transition-delay: 0s; }
+    .year-panel-head { display: flex; align-items: center; justify-content: space-between; }
+    .year-panel-title { color: var(--cream); font-size: 15px; font-weight: 850; }
+    .year-close { width: 31px; height: 31px; border: 0; border-radius: 50%; background: #353a51; color: var(--cream); cursor: pointer; font-weight: 900; }
+    .year-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 17px; }
+    .year-option { height: 44px; border: 0; border-radius: 15px 12px 16px 13px; background: #30354a; color: var(--cream); cursor: pointer; font-size: 11px; font-weight: 800; }
+    .year-option.selected { background: var(--yellow); color: #292d40; transform: rotate(-1deg); }
+    .year-option:active { transform: scale(.94); }
 
     .hidden-date {
       position: fixed;
@@ -638,30 +719,58 @@
             <span class="app-name">Windback</span>
           </header>
           <div class="windback-body">
-            <div class="time-orbit">
-              <span class="orbit-dot a"></span><span class="orbit-dot b"></span><span class="orbit-dot c"></span>
-              <div>
-                <img class="windback-hero-icon" id="windbackHeroIcon" src="assets/windback-icon.png" alt="">
-                <div class="chosen-label">THE DAY IN YOUR HAND</div>
-                <div class="chosen-date" id="windbackChosenDate">Friday, 11 September 2026</div>
+            <div class="calendar-intro">
+              <img class="windback-mini-icon" id="windbackHeroIcon" src="assets/windback-icon.png" alt="">
+              <div class="calendar-intro-copy">
+                <div class="calendar-kicker">CHOOSE A DAY TO RETURN TO</div>
+                <div class="calendar-intro-title">Your memories, one month at a time.</div>
+                <div class="calendar-intro-sub">Colored dots preview which apps hold something from that day.</div>
               </div>
             </div>
 
-            <div class="date-steps" aria-label="Wind back shortcuts">
-              <button class="date-step" type="button" data-amount="-1" data-unit="day">Yesterday<small>one day</small></button>
-              <button class="date-step" type="button" data-amount="-7" data-unit="day">Last week<small>seven days</small></button>
-              <button class="date-step" type="button" data-amount="-1" data-unit="month">Last month<small>same date</small></button>
-              <button class="date-step" type="button" data-amount="-1" data-unit="year">Last year<small>same day</small></button>
-            </div>
+            <section class="calendar-shell" aria-label="Windback calendar">
+              <div class="calendar-nav">
+                <button class="month-arrow" id="previousMonth" type="button" aria-label="Previous month">‹</button>
+                <button class="month-button" id="yearPickerButton" type="button" aria-label="Choose a year">
+                  <span class="month-name" id="calendarMonthName">September</span>
+                  <span class="month-year" id="calendarYear">2026 · TAP FOR YEAR</span>
+                </button>
+                <button class="month-arrow" id="nextMonth" type="button" aria-label="Next month">›</button>
+              </div>
 
-            <div class="time-slider-card">
-              <div class="slider-label"><span>2010</span><span>slide through time</span><span id="sliderEndYear">2026</span></div>
-              <input class="time-slider" id="timeSlider" type="range" min="0" max="1" value="1" aria-label="Choose a day on the timeline">
-            </div>
+              <div class="calendar-weekdays" aria-hidden="true">
+                <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+              </div>
 
-            <div class="windback-actions">
-              <button class="exact-date" id="exactDateButton" type="button">Choose a date</button>
-              <button class="set-day" id="setDayButton" type="button">Go to this day</button>
+              <div class="calendar-grid" id="calendarGrid" role="grid" aria-label="Days in selected month"></div>
+
+              <div class="calendar-legend" aria-label="Memory indicators">
+                <span class="legend-item"><i class="legend-dot messages"></i>chat</span>
+                <span class="legend-item"><i class="legend-dot instagram"></i>IG</span>
+                <span class="legend-item"><i class="legend-dot maps"></i>places</span>
+                <span class="legend-item"><i class="legend-dot photos"></i>photos</span>
+              </div>
+
+              <div class="calendar-jumps">
+                <button id="todayButton" type="button">Back to today</button>
+                <button id="exactDateButton" type="button">Type a date</button>
+              </div>
+
+              <div class="year-panel" id="yearPanel" aria-hidden="true">
+                <div class="year-panel-head">
+                  <span class="year-panel-title">Which year?</span>
+                  <button class="year-close" id="yearClose" type="button" aria-label="Close year picker">×</button>
+                </div>
+                <div class="year-grid" id="yearGrid"></div>
+              </div>
+            </section>
+
+            <div class="calendar-choice">
+              <div>
+                <div class="chosen-label">SELECTED MEMORY</div>
+                <div class="chosen-date" id="windbackChosenDate">Friday, 11 September 2026</div>
+              </div>
+              <button class="set-day" id="setDayButton" type="button">Wind back to this day</button>
             </div>
           </div>
         </section>
@@ -696,8 +805,16 @@
     const windbackView = document.getElementById('windbackView');
     const windbackBack = document.getElementById('windbackBack');
     const windbackHeroIcon = document.getElementById('windbackHeroIcon');
-    const timeSlider = document.getElementById('timeSlider');
-    const sliderEndYear = document.getElementById('sliderEndYear');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const calendarMonthName = document.getElementById('calendarMonthName');
+    const calendarYear = document.getElementById('calendarYear');
+    const previousMonth = document.getElementById('previousMonth');
+    const nextMonth = document.getElementById('nextMonth');
+    const yearPickerButton = document.getElementById('yearPickerButton');
+    const yearPanel = document.getElementById('yearPanel');
+    const yearGrid = document.getElementById('yearGrid');
+    const yearClose = document.getElementById('yearClose');
+    const todayButton = document.getElementById('todayButton');
     const exactDateButton = document.getElementById('exactDateButton');
     const setDayButton = document.getElementById('setDayButton');
     const appView = document.getElementById('appView');
@@ -734,12 +851,10 @@
       return date;
     }
 
-    const lastOffset = dayNumber(endDate) - dayNumber(startDate);
-    timeSlider.max = String(lastOffset);
-    sliderEndYear.textContent = String(endDate.getFullYear());
     datePicker.min = toLocalIso(startDate);
     datePicker.max = toLocalIso(endDate);
     let selectedDate = clampDate(parseLocalDate(datePicker.value));
+    let calendarMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
 
     function animateWindback() {
       windbackHeroIcon.classList.remove('turning');
@@ -749,19 +864,143 @@
       });
     }
 
+    function sameDay(first, second) {
+      return first.getFullYear() === second.getFullYear()
+        && first.getMonth() === second.getMonth()
+        && first.getDate() === second.getDate();
+    }
+
+    function memoryTypesFor(date) {
+      const seed = dayNumber(date);
+      const types = [];
+      if (seed % 3 === 0) types.push('messages');
+      if (seed % 7 === 0) types.push('instagram');
+      if (seed % 5 === 0) types.push('maps');
+      if (seed % 4 === 0) types.push('photos');
+      return types.slice(0, 3);
+    }
+
     function updateSelectedDate(date, animate = true) {
       selectedDate = clampDate(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
+      calendarMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
       const compact = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
       const full = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
       windbackHomeDate.textContent = compact;
       windbackChosenDate.textContent = full;
       dayTitle.textContent = compact;
       datePicker.value = toLocalIso(selectedDate);
-      timeSlider.value = String(dayNumber(selectedDate) - dayNumber(startDate));
       if (animate) animateWindback();
+      renderCalendar(animate);
+    }
+
+    function renderYearGrid() {
+      yearGrid.replaceChildren();
+      for (let year = endDate.getFullYear(); year >= startDate.getFullYear(); year -= 1) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'year-option' + (year === calendarMonth.getFullYear() ? ' selected' : '');
+        button.textContent = String(year);
+        button.addEventListener('click', () => {
+          const targetMonth = calendarMonth.getMonth();
+          calendarMonth = new Date(year, targetMonth, 1);
+          if (calendarMonth > new Date(endDate.getFullYear(), endDate.getMonth(), 1)) {
+            calendarMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+          }
+          closeYearPicker();
+          renderCalendar(true);
+        });
+        yearGrid.append(button);
+      }
+    }
+
+    function renderCalendar(animate = false) {
+      const year = calendarMonth.getFullYear();
+      const month = calendarMonth.getMonth();
+      const firstOfMonth = new Date(year, month, 1);
+      const mondayOffset = (firstOfMonth.getDay() + 6) % 7;
+      const gridStart = new Date(year, month, 1 - mondayOffset);
+      const earliestMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+      const latestMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+
+      calendarMonthName.textContent = firstOfMonth.toLocaleDateString('en-GB', { month: 'long' });
+      calendarYear.textContent = `${year} · TAP FOR YEAR`;
+      previousMonth.disabled = firstOfMonth <= earliestMonth;
+      nextMonth.disabled = firstOfMonth >= latestMonth;
+      calendarGrid.replaceChildren();
+
+      for (let index = 0; index < 42; index += 1) {
+        const date = new Date(gridStart);
+        date.setDate(gridStart.getDate() + index);
+        const isOutside = date.getMonth() !== month;
+        const isUnavailable = date < startDate || date > endDate;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'calendar-day';
+        button.setAttribute('role', 'gridcell');
+        button.setAttribute('aria-label', date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+        if (isOutside) button.classList.add('other-month');
+        if (sameDay(date, selectedDate)) button.classList.add('selected');
+        if (sameDay(date, endDate)) button.classList.add('today');
+        button.disabled = isUnavailable;
+
+        const number = document.createElement('span');
+        number.textContent = String(date.getDate());
+        button.append(number);
+
+        if (!isUnavailable) {
+          const memories = memoryTypesFor(date);
+          if (memories.length) {
+            const dots = document.createElement('span');
+            dots.className = 'memory-dots';
+            dots.setAttribute('aria-hidden', 'true');
+            memories.forEach((type) => {
+              const dot = document.createElement('i');
+              dot.className = `memory-dot ${type}`;
+              dots.append(dot);
+            });
+            button.append(dots);
+          }
+
+          button.addEventListener('click', () => updateSelectedDate(date));
+        }
+
+        calendarGrid.append(button);
+      }
+
+      renderYearGrid();
+      if (animate) {
+        calendarGrid.classList.remove('turning');
+        requestAnimationFrame(() => calendarGrid.classList.add('turning'));
+      }
+    }
+
+    function moveMonth(amount) {
+      const candidate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + amount, 1);
+      const earliestMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+      const latestMonth = new Date(endDate.getFullYear(), endDate.getMonth(), 1);
+      if (candidate < earliestMonth || candidate > latestMonth) return;
+      calendarMonth = candidate;
+      animateWindback();
+      renderCalendar(true);
+    }
+
+    function openYearPicker() {
+      renderYearGrid();
+      yearPanel.classList.add('open');
+      yearPanel.setAttribute('aria-hidden', 'false');
+      const current = yearGrid.querySelector('.selected');
+      if (current) current.focus();
+    }
+
+    function closeYearPicker() {
+      yearPanel.classList.remove('open');
+      yearPanel.setAttribute('aria-hidden', 'true');
+      yearPickerButton.focus();
     }
 
     function openWindback() {
+      calendarMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+      renderCalendar();
       windbackView.classList.add('open');
       windbackView.setAttribute('aria-hidden', 'false');
       windbackBack.focus();
@@ -782,44 +1021,15 @@
     windbackBack.addEventListener('click', closeWindback);
     setDayButton.addEventListener('click', closeWindback);
     exactDateButton.addEventListener('click', showDatePicker);
+    previousMonth.addEventListener('click', () => moveMonth(-1));
+    nextMonth.addEventListener('click', () => moveMonth(1));
+    yearPickerButton.addEventListener('click', openYearPicker);
+    yearClose.addEventListener('click', closeYearPicker);
+    todayButton.addEventListener('click', () => updateSelectedDate(endDate));
 
     datePicker.addEventListener('change', () => {
       if (!datePicker.value) return;
       updateSelectedDate(parseLocalDate(datePicker.value));
-    });
-
-    timeSlider.addEventListener('input', () => {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + Number(timeSlider.value));
-      updateSelectedDate(date);
-    });
-
-    document.querySelectorAll('.date-step').forEach((button) => {
-      button.addEventListener('click', () => {
-        const amount = Number(button.dataset.amount);
-        const unit = button.dataset.unit;
-        const next = new Date(selectedDate);
-
-        if (unit === 'day') {
-          next.setDate(next.getDate() + amount);
-        } else if (unit === 'month') {
-          const intendedDay = next.getDate();
-          next.setDate(1);
-          next.setMonth(next.getMonth() + amount);
-          const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
-          next.setDate(Math.min(intendedDay, lastDay));
-        } else if (unit === 'year') {
-          const intendedMonth = next.getMonth();
-          const intendedDay = next.getDate();
-          next.setDate(1);
-          next.setFullYear(next.getFullYear() + amount);
-          next.setMonth(intendedMonth);
-          const lastDay = new Date(next.getFullYear(), intendedMonth + 1, 0).getDate();
-          next.setDate(Math.min(intendedDay, lastDay));
-        }
-
-        updateSelectedDate(next);
-      });
     });
 
     document.querySelectorAll('.app').forEach((button) => {
@@ -846,7 +1056,8 @@
     backButton.addEventListener('click', closeApp);
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
-      if (windbackView.classList.contains('open')) closeWindback();
+      if (yearPanel.classList.contains('open')) closeYearPicker();
+      else if (windbackView.classList.contains('open')) closeWindback();
       else closeApp();
     });
 
