@@ -24,6 +24,8 @@
 
     * { box-sizing: border-box; }
 
+    [hidden] { display: none !important; }
+
     body {
       min-height: 100vh;
       margin: 0;
@@ -765,6 +767,7 @@
     .thread-list { min-height: 0; overflow: auto; padding: 2px 8px 14px; }
     .thread {
       width: 100%;
+      overflow: hidden;
       min-height: 64px;
       display: grid;
       grid-template-columns: 45px minmax(0, 1fr) auto;
@@ -796,9 +799,9 @@
     }
 
     .instagram-app .avatar { outline: 3px solid #b26f88; outline-offset: 2px; }
-    .thread-copy { min-width: 0; }
-    .thread-name { overflow: hidden; font-size: 11px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
-    .thread-preview { margin-top: 4px; overflow: hidden; color: var(--social-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .thread-copy { display: block; min-width: 0; }
+    .thread-name { display: block; overflow: hidden; font-size: 11px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .thread-preview { display: block; margin-top: 4px; overflow: hidden; color: var(--social-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
     .thread-time { align-self: start; padding-top: 4px; color: var(--social-muted); font-size: 8px; }
 
     .social-chat { min-width: 0; min-height: 0; display: grid; grid-template-rows: auto 1fr auto; background: var(--social-bg); }
@@ -819,27 +822,125 @@
     }
 
     .day-stamp { align-self: center; margin: 2px 0 7px; color: var(--social-muted); font-size: 8px; font-weight: 750; letter-spacing: .08em; }
-    .message { max-width: min(74%, 390px); padding: 9px 12px; border-radius: 17px 18px 18px 7px; background: var(--social-soft); color: var(--social-ink); font-size: 10px; line-height: 1.45; }
+    .message { max-width: min(74%, 390px); padding: 9px 12px; border-radius: 17px 18px 18px 7px; background: var(--social-soft); color: var(--social-ink); font-size: 10px; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
     .message.mine { align-self: flex-end; border-radius: 18px 17px 7px 18px; background: var(--social-accent); color: #182134; }
     .instagram-app .message.mine { background: #756b9a; color: #f6f1e9; }
     .message-time { display: block; margin-top: 4px; opacity: .56; font-size: 7px; text-align: right; }
 
-    .photo-message { align-self: flex-start; max-width: min(78%, 410px); }
-    .memory-photo {
+    .message-sender { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 3px 0 -4px; padding-left: 3px; color: var(--social-muted); font-size: 8px; font-weight: 800; }
+
+    .message-media { align-self: flex-start; display: grid; gap: 5px; max-width: min(78%, 410px); }
+    .message-media.mine { align-self: flex-end; justify-items: end; }
+
+    .message-photo {
       position: relative;
-      width: 230px;
       max-width: 100%;
-      aspect-ratio: 1.42;
       overflow: hidden;
       border-radius: 22px 18px 23px 16px;
-      background: #87a9c2;
+      background: var(--social-soft);
     }
 
-    .memory-photo .sun { position: absolute; width: 39px; height: 39px; right: 23px; top: 23px; border-radius: 50%; background: #f1c765; }
-    .memory-photo .hill-one { position: absolute; width: 180px; height: 110px; left: -28px; bottom: -54px; border-radius: 50%; background: #789a82; transform: rotate(8deg); }
-    .memory-photo .hill-two { position: absolute; width: 190px; height: 105px; right: -60px; bottom: -48px; border-radius: 50%; background: #566f76; transform: rotate(-8deg); }
-    .memory-photo .path { position: absolute; width: 34px; height: 110px; left: 98px; bottom: -31px; border-radius: 50%; background: #f0e5cf; transform: rotate(13deg); }
-    .photo-caption { margin-top: 4px; color: var(--social-muted); font-size: 8px; }
+    .message-photo.waiting { width: 230px; aspect-ratio: 1.42; }
+
+    /* Keep the whole frame: cap the long side rather than cropping a memory. */
+    .message-photo img,
+    .message-photo video { display: block; width: auto; height: auto; max-width: min(230px, 100%); max-height: 340px; }
+
+    .message-photo.waiting::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 35%, rgba(245,237,219,.08) 50%, transparent 65%);
+      background-size: 260% 100%;
+      animation: photo-waiting 1.7s ease-in-out infinite;
+    }
+
+    @keyframes photo-waiting {
+      from { background-position: 150% 0; }
+      to { background-position: -50% 0; }
+    }
+
+    .message-file {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      max-width: 100%;
+      border-radius: 15px 12px 16px 13px;
+      padding: 8px 12px;
+      background: var(--social-soft);
+      color: var(--social-ink);
+      font-size: 9px;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .message-file i { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--social-accent); }
+    .message-file audio { width: 210px; max-width: 100%; height: 30px; }
+
+    .social-empty {
+      display: grid;
+      place-content: center;
+      justify-items: center;
+      gap: 9px;
+      height: 100%;
+      padding: 26px 22px;
+      text-align: center;
+    }
+
+    .social-empty-art {
+      position: relative;
+      width: 74px;
+      height: 58px;
+      border-radius: 20px 16px 21px 15px;
+      background: var(--social-soft);
+      animation: memory-float 7s ease-in-out infinite;
+    }
+
+    .social-empty-art::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 19px;
+      width: 44px;
+      height: 7px;
+      border-radius: 4px;
+      background: var(--social-accent);
+      opacity: .65;
+    }
+
+    .social-empty-art::after {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      width: 27px;
+      height: 7px;
+      border-radius: 4px;
+      background: var(--social-muted);
+      opacity: .45;
+    }
+
+    .social-empty h3 { margin: 2px 0 0; font-size: 13px; font-weight: 850; }
+    .social-empty p { max-width: 250px; margin: 0; color: var(--social-muted); font-size: 9px; line-height: 1.6; }
+
+    .social-empty button {
+      min-height: 33px;
+      margin-top: 3px;
+      border: 0;
+      border-radius: 15px 12px 16px 13px;
+      padding: 0 14px;
+      background: var(--social-accent);
+      color: #182134;
+      cursor: pointer;
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .instagram-app .social-empty button { background: #756b9a; color: #f6f1e9; }
+    .social-empty button:active { transform: scale(.94); }
+
+    .thread-count { align-self: start; padding-top: 3px; color: var(--social-muted); font-size: 8px; text-align: right; white-space: nowrap; }
+    .thread-count b { display: block; color: var(--social-ink); font-size: 9px; font-weight: 850; }
 
     .composer {
       min-height: 62px;
@@ -861,7 +962,9 @@
     .mobile-social .social-app.show-chat .social-chat { display: grid; }
     .mobile-social .social-back { display: grid; place-items: center; }
     .mobile-social .message-stream { padding: 16px 14px; }
-    .mobile-social .memory-photo { width: 205px; }
+    .mobile-social .message-photo.waiting { width: 205px; }
+    .mobile-social .message-photo img,
+    .mobile-social .message-photo video { max-width: min(205px, 100%); max-height: 300px; }
     .mobile-social .social-brand-head { padding-top: 22px; }
 
     .maps-app {
@@ -903,22 +1006,6 @@
     .maps-title { display: block; font-size: 14px; font-weight: 850; letter-spacing: .02em; }
     .maps-date { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
     .maps-head-actions { display: flex; align-items: center; gap: 8px; }
-    .maps-change {
-      position: relative;
-      display: grid;
-      width: 30px;
-      height: 30px;
-      overflow: hidden;
-      place-items: center;
-      border-radius: 10px 12px 9px 11px;
-      background: #292f46;
-      color: var(--muted);
-      cursor: pointer;
-      font-size: 15px;
-      font-weight: 900;
-    }
-    .maps-change:hover { color: var(--cream); transform: rotate(-5deg); }
-    .maps-change input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
     .maps-mark {
       display: grid;
       width: 38px;
@@ -995,7 +1082,8 @@
       font-weight: 850;
     }
     .maps-import:hover { transform: translateY(-1px) rotate(-.5deg); }
-    .maps-import input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .maps-import:active { transform: scale(.95); }
+    button.maps-import { border: 0; }
     .maps-file-status { display: block; margin-top: 10px; color: #8b8f9c; font-size: 8px; }
 
     .maps-playback {
@@ -1053,6 +1141,174 @@
       pointer-events: none;
     }
     .map-playhead svg { width: 27px; height: 27px; fill: #ef7f70; stroke: #f7f2e8; stroke-width: 1.2; transform: rotate(-12deg); filter: drop-shadow(0 1px 1px rgba(52,57,76,.22)); }
+
+    .memory-app {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+      background: #141824;
+      color: var(--cream);
+    }
+
+    .memory-head {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 11px;
+      padding: 13px 15px;
+      background: #1b2034;
+    }
+
+    .memory-title { display: block; font-size: 14px; font-weight: 850; letter-spacing: .02em; }
+    .memory-subtitle { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .memory-head-art { width: 30px; height: 30px; flex: none; }
+    .memory-head-art svg { width: 100%; height: 100%; }
+
+    .memory-body {
+      min-height: 0;
+      overflow-y: auto;
+      display: grid;
+      align-content: start;
+      gap: 13px;
+      padding: 17px 15px 22px;
+      scrollbar-width: thin;
+    }
+
+    .memory-shelf {
+      display: grid;
+      justify-items: center;
+      gap: 11px;
+      padding: 4px 0 2px;
+      text-align: center;
+    }
+
+    .memory-art { width: 116px; height: 84px; animation: memory-float 7s ease-in-out infinite; }
+    .memory-art svg { width: 100%; height: 100%; overflow: visible; }
+
+    @keyframes memory-float {
+      0%, 100% { transform: translateY(0) rotate(-.6deg); }
+      50% { transform: translateY(-3px) rotate(.5deg); }
+    }
+
+    .memory-headline { margin: 0; font-size: 17px; font-weight: 850; line-height: 1.2; }
+    .memory-copy { max-width: 290px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+
+    .memory-connect {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 38px;
+      margin-top: 2px;
+      border: 0;
+      border-radius: 17px 14px 19px 15px;
+      padding: 0 17px;
+      background: var(--coral);
+      color: #24283a;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 900;
+      transition: transform 180ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .memory-connect:hover { transform: translateY(-1px) rotate(-.6deg); }
+    .memory-connect:active { transform: scale(.95); }
+    .memory-connect:disabled { opacity: .45; cursor: default; transform: none; }
+    .memory-connect input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+    .memory-sources { display: grid; gap: 9px; }
+
+    .memory-source {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 11px;
+      border-radius: 19px 15px 20px 16px;
+      padding: 11px 13px;
+      background: var(--card);
+      transition: transform 200ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .memory-source.found { background: #262c42; }
+    .memory-source.found:hover { transform: rotate(-.4deg); }
+    .memory-source.missing { opacity: .58; }
+
+    .memory-glyph { width: 38px; height: 38px; flex: none; }
+    .memory-glyph svg { width: 100%; height: 100%; }
+
+    .memory-source-name { display: block; font-size: 11px; font-weight: 850; letter-spacing: .01em; }
+    .memory-source-note { display: block; margin-top: 3px; color: var(--muted); font-size: 9px; line-height: 1.45; }
+    .memory-source-note strong { color: var(--cream); font-weight: 800; }
+
+    .memory-state {
+      display: grid;
+      place-items: center;
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      background: #333950;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .memory-source.found .memory-state { background: var(--sage); color: #22301f; transform: rotate(-5deg); }
+
+    .memory-folder {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      border-radius: 17px 14px 18px 15px;
+      padding: 10px 12px;
+      background: #1d2235;
+    }
+
+    .memory-folder-label { display: block; color: var(--muted); font-size: 8px; letter-spacing: .13em; text-transform: uppercase; }
+    .memory-folder-path { display: block; margin-top: 3px; overflow: hidden; color: var(--cream); font-size: 10px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+
+    .memory-swap {
+      min-height: 28px;
+      border: 0;
+      border-radius: 13px 10px 14px 11px;
+      padding: 0 11px;
+      background: #333950;
+      color: var(--cream);
+      cursor: pointer;
+      font-size: 9px;
+      font-weight: 850;
+      transition: transform 180ms cubic-bezier(.2,.8,.2,1);
+    }
+
+    .memory-swap:hover { background: #3c4360; transform: rotate(-3deg); }
+    .memory-swap:active { transform: scale(.93); }
+
+    .memory-note {
+      margin: 0;
+      color: #7c8296;
+      font-size: 8px;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .memory-alert {
+      border-radius: 16px 13px 17px 14px;
+      padding: 10px 12px;
+      background: rgba(239,127,112,.14);
+      color: var(--coral);
+      font-size: 9px;
+      font-weight: 750;
+      line-height: 1.55;
+    }
+
+
+    .mobile-social .memory-head { padding-top: 24px; }
+    .mobile-social .memory-body { padding-inline: 13px; }
+    .mobile-social .memory-headline { font-size: 15px; }
 
     .mobile-social .maps-head { padding-top: 24px; }
     .mobile-social .maps-playback { grid-template-columns: auto minmax(0, 1fr); gap: 10px; padding-inline: 13px; }
@@ -1169,7 +1425,7 @@
               <button class="app" style="--i:10" data-name="Clock" data-pos="p22" aria-label="Open Clock"><span class="app-art p22"></span></button>
               <button class="app" style="--i:11" data-name="Calendar" data-pos="p32" aria-label="Open Calendar"><span class="app-art p32"></span></button>
               <button class="app" style="--i:12" data-name="Settings" data-pos="p03" aria-label="Open Settings"><span class="app-art p03"></span></button>
-              <button class="app" style="--i:13" data-name="Files" data-pos="p13" aria-label="Open Files"><span class="app-art p13"></span></button>
+              <button class="app" style="--i:13" data-name="Memory Box" data-pos="p13" aria-label="Open Memory Box"><span class="app-art p13"></span></button>
               <button class="app" style="--i:14" data-name="Weather" data-pos="p23" aria-label="Open Weather"><span class="app-art p23"></span></button>
               <button class="app" style="--i:15" data-name="Notes" data-pos="p33" aria-label="Open Notes"><span class="app-art p33"></span></button>
               <button class="app" style="--i:16" data-name="Phone" data-pos="p04" aria-label="Open Phone"><span class="app-art p04"></span></button>
@@ -1299,10 +1555,6 @@
           </div>
         </div>
         <div class="maps-head-actions">
-          <label class="maps-change" aria-label="Choose another Timeline file" title="Choose another Timeline file">
-            <input type="file" accept=".json,application/json" data-timeline-input>
-            <span aria-hidden="true">↻</span>
-          </label>
           <span class="maps-mark" aria-hidden="true">
             <svg viewBox="0 0 32 32"><path d="M7 6.5 13 4l6 3 6-2.5v21L19 27l-6-3-6 2.5z"/><path d="M13 4v20m6-17v20"/><circle cx="23" cy="9" r="2.4" fill="#ef7f70" stroke="none"/></svg>
           </span>
@@ -1314,11 +1566,10 @@
           <div>
             <div class="maps-empty-art" aria-hidden="true"></div>
             <h2 data-map-empty-title>Wake up your paths</h2>
-            <p data-map-empty-copy>Choose your Google Timeline file. It stays on this device and is read only in your browser.</p>
-            <label class="maps-import">
-              <input type="file" accept=".json,application/json" data-timeline-input>
-              <span data-import-label>Choose Timeline.json</span>
-            </label>
+            <p data-map-empty-copy>Your places live in the Memory Box. Connect your archive folder there and this map will remember where the day went.</p>
+            <button class="maps-import" type="button" data-open-memory>
+              <span>Open the Memory Box</span>
+            </button>
             <span class="maps-file-status" data-map-status>No location history loaded</span>
           </div>
         </div>
@@ -1334,6 +1585,95 @@
     </div>
   </template>
 
+  <template id="memoryTemplate">
+    <div class="memory-app">
+      <header class="memory-head">
+        <div class="maps-title-group">
+          <button class="maps-close" type="button" data-close-memory aria-label="Close Memory Box">‹</button>
+          <div>
+            <span class="memory-title">Memory Box</span>
+            <span class="memory-subtitle">Everything this phone remembers</span>
+          </div>
+        </div>
+        <span class="memory-head-art" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M5 12.5 16 8l11 4.5-11 4.5z" fill="#f1c765"/>
+            <path d="M5 12.5v10L16 27V17z" fill="#ef7f70"/>
+            <path d="M27 12.5v10L16 27V17z" fill="#91ad91"/>
+          </svg>
+        </span>
+      </header>
+
+      <div class="memory-body">
+        <div class="memory-shelf">
+          <div class="memory-art" aria-hidden="true">
+            <svg viewBox="0 0 120 88" fill="none">
+              <rect x="22" y="8" width="34" height="44" rx="4" fill="#82a8c5" transform="rotate(-8 39 30)"/>
+              <rect x="46" y="4" width="34" height="44" rx="4" fill="#aaa0cf" transform="rotate(4 63 26)"/>
+              <rect x="66" y="10" width="32" height="42" rx="4" fill="#f1c765" transform="rotate(11 82 31)"/>
+              <path d="M12 44h96l-6 34H18z" fill="#ef7f70"/>
+              <path d="M12 44h96l-5 11H17z" fill="#f5eddb" opacity=".22"/>
+              <circle cx="60" cy="63" r="5" fill="#24283a" opacity=".28"/>
+            </svg>
+          </div>
+          <h2 class="memory-headline" data-memory-headline>Bring your archive home</h2>
+          <p class="memory-copy" data-memory-copy>Choose the folder holding your exports. The zip files can stay exactly as they downloaded — nothing is unpacked, uploaded, or copied. This phone just reads them where they sit.</p>
+          <button class="memory-connect" type="button" data-memory-connect>
+            <span aria-hidden="true">❑</span><span data-memory-connect-label>Choose archive folder</span>
+            <input type="file" data-memory-fallback-input hidden webkitdirectory directory multiple>
+          </button>
+        </div>
+
+        <p class="memory-alert" data-memory-alert hidden></p>
+
+        <div class="memory-folder" data-memory-folder hidden>
+          <div>
+            <span class="memory-folder-label">Connected folder</span>
+            <span class="memory-folder-path" data-memory-path>—</span>
+          </div>
+          <button class="memory-swap" type="button" data-memory-swap>Change</button>
+        </div>
+
+        <div class="memory-sources" data-memory-sources>
+          <div class="memory-source missing" data-memory-source="messenger">
+            <span class="memory-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="#82a8c5"><path d="M12 0C5.24 0 0 4.952 0 11.64c0 3.499 1.434 6.521 3.769 8.61a.96.96 0 0 1 .323.683l.065 2.135a.96.96 0 0 0 1.347.85l2.381-1.053a.96.96 0 0 1 .641-.046A13 13 0 0 0 12 23.28c6.76 0 12-4.952 12-11.64S18.76 0 12 0m6.806 7.44c.522-.03.971.567.63 1.094l-4.178 6.457a.707.707 0 0 1-.977.208l-3.87-2.504a.44.44 0 0 0-.49.007l-4.363 3.01c-.637.438-1.415-.317-.995-.966l4.179-6.457a.706.706 0 0 1 .977-.21l3.87 2.505c.15.097.344.094.491-.007l4.362-3.008a.7.7 0 0 1 .364-.13"/></svg>
+            </span>
+            <span>
+              <span class="memory-source-name">Messenger</span>
+              <span class="memory-source-note" data-memory-note>Not found yet</span>
+            </span>
+            <span class="memory-state" data-memory-state aria-hidden="true">·</span>
+          </div>
+
+          <div class="memory-source missing" data-memory-source="instagram">
+            <span class="memory-glyph" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#aaa0cf" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.45" cy="6.65" r="1.15" fill="#aaa0cf" stroke="none"/></svg>
+            </span>
+            <span>
+              <span class="memory-source-name">Instagram</span>
+              <span class="memory-source-note" data-memory-note>Not found yet</span>
+            </span>
+            <span class="memory-state" data-memory-state aria-hidden="true">·</span>
+          </div>
+
+          <div class="memory-source missing" data-memory-source="maps">
+            <span class="memory-glyph" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none" stroke="#91ad91" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6.5 13 4l6 3 6-2.5v21L19 27l-6-3-6 2.5z"/><path d="M13 4v20m6-17v20"/><circle cx="23" cy="9" r="2.4" fill="#ef7f70" stroke="none"/></svg>
+            </span>
+            <span>
+              <span class="memory-source-name">Maps</span>
+              <span class="memory-source-note" data-memory-note>Not found yet</span>
+            </span>
+            <span class="memory-state" data-memory-state aria-hidden="true">·</span>
+          </div>
+        </div>
+
+        <p class="memory-note">Your messages, photographs, and places are read straight from this folder and stay on your computer. They are never uploaded.</p>
+      </div>
+    </div>
+  </template>
+
   <template id="messengerTemplate">
     <div class="social-app messenger-app">
       <aside class="social-sidebar">
@@ -1345,38 +1685,17 @@
           <button class="social-close" type="button" data-close-social aria-label="Close Messenger">×</button>
         </header>
         <div class="social-search">⌕ &nbsp; Search this day</div>
-        <div class="thread-list">
-          <button class="thread selected" type="button" data-open-thread data-name="Mia" data-initial="M" data-color="#ef8a7d">
-            <span class="avatar" style="--avatar:#ef8a7d">M</span><span class="thread-copy"><span class="thread-name">Mia</span><span class="thread-preview">The light was so pretty today</span></span><span class="thread-time">22:18</span>
-          </button>
-          <button class="thread" type="button" data-open-thread data-name="Family" data-initial="F" data-color="#f0c86c">
-            <span class="avatar" style="--avatar:#f0c86c">F</span><span class="thread-copy"><span class="thread-name">Family</span><span class="thread-preview">Mom sent a photo</span></span><span class="thread-time">19:42</span>
-          </button>
-          <button class="thread" type="button" data-open-thread data-name="Huy" data-initial="H" data-color="#87abc5">
-            <span class="avatar" style="--avatar:#87abc5">H</span><span class="thread-copy"><span class="thread-name">Huy</span><span class="thread-preview">See you by the river?</span></span><span class="thread-time">15:06</span>
-          </button>
-          <button class="thread" type="button" data-open-thread data-name="Old friends" data-initial="O" data-color="#9fb798">
-            <span class="avatar" style="--avatar:#9fb798">O</span><span class="thread-copy"><span class="thread-name">Old friends</span><span class="thread-preview">You: I remember that place</span></span><span class="thread-time">10:31</span>
-          </button>
-        </div>
+        <div class="thread-list"></div>
       </aside>
       <section class="social-chat">
         <header class="social-chat-head">
           <button class="social-back" type="button" data-back-to-inbox aria-label="Back to conversations">‹</button>
-          <span class="avatar" data-chat-avatar style="--avatar:#ef8a7d">M</span>
-          <div class="chat-head-copy"><div class="chat-name" data-chat-name>Mia</div><div class="chat-status">Messenger · from this day</div></div>
+          <span class="avatar" data-chat-avatar style="--avatar:#ef8a7d"></span>
+          <div class="chat-head-copy"><div class="chat-name" data-chat-name>Conversation</div><div class="chat-status">Messenger · from this day</div></div>
           <span class="chat-symbol">✦</span>
         </header>
         <div class="message-stream">
           <div class="day-stamp" data-social-date>FRIDAY, 11 SEPTEMBER · 2026</div>
-          <div class="message">Do you remember the little path behind the café?<span class="message-time">17:24</span></div>
-          <div class="message mine">Yes. I walked there again this afternoon.<span class="message-time">17:26</span></div>
-          <div class="photo-message">
-            <div class="memory-photo" role="img" aria-label="Illustrated sunset path"><span class="sun"></span><span class="hill-one"></span><span class="hill-two"></span><span class="path"></span></div>
-            <div class="photo-caption">Sent at 17:28</div>
-          </div>
-          <div class="message">The light was so pretty today.<span class="message-time">17:31</span></div>
-          <div class="message mine">Saving this one for future me ✦<span class="message-time">17:34</span></div>
         </div>
         <div class="composer"><button class="composer-button" type="button" aria-label="Add media">＋</button><div class="composer-field">Message from the past...</div><button class="composer-button" type="button" aria-label="Send a heart">♥</button></div>
       </section>
@@ -1394,39 +1713,17 @@
           <button class="social-close" type="button" data-close-social aria-label="Close Instagram">×</button>
         </header>
         <div class="social-search">⌕ &nbsp; Search messages</div>
-        <div class="instagram-note"><span class="avatar" style="--avatar:#aaa0cf;width:34px;height:34px;font-size:11px">You</span><span>Your note from this day<br><strong style="color:#eee9df">slow afternoons ✦</strong></span></div>
-        <div class="thread-list">
-          <button class="thread selected" type="button" data-open-thread data-name="Linh" data-initial="L" data-color="#d98983">
-            <span class="avatar" style="--avatar:#d98983">L</span><span class="thread-copy"><span class="thread-name">Linh</span><span class="thread-preview">Replied to your photo</span></span><span class="thread-time">21:04</span>
-          </button>
-          <button class="thread" type="button" data-open-thread data-name="Noah" data-initial="N" data-color="#87abc5">
-            <span class="avatar" style="--avatar:#87abc5">N</span><span class="thread-copy"><span class="thread-name">Noah</span><span class="thread-preview">Sent a reel</span></span><span class="thread-time">18:21</span>
-          </button>
-          <button class="thread" type="button" data-open-thread data-name="travel notes" data-initial="T" data-color="#9fb798">
-            <span class="avatar" style="--avatar:#9fb798">T</span><span class="thread-copy"><span class="thread-name">travel notes</span><span class="thread-preview">You shared a photo</span></span><span class="thread-time">14:10</span>
-          </button>
-          <button class="thread" type="button" data-open-thread data-name="Mai" data-initial="M" data-color="#f0c86c">
-            <span class="avatar" style="--avatar:#f0c86c">M</span><span class="thread-copy"><span class="thread-name">Mai</span><span class="thread-preview">That place looks peaceful</span></span><span class="thread-time">09:44</span>
-          </button>
-        </div>
+        <div class="thread-list"></div>
       </aside>
       <section class="social-chat">
         <header class="social-chat-head">
           <button class="social-back" type="button" data-back-to-inbox aria-label="Back to direct messages">‹</button>
-          <span class="avatar" data-chat-avatar style="--avatar:#d98983">L</span>
-          <div class="chat-head-copy"><div class="chat-name" data-chat-name>Linh</div><div class="chat-status">Instagram · direct message</div></div>
+          <span class="avatar" data-chat-avatar style="--avatar:#d98983"></span>
+          <div class="chat-head-copy"><div class="chat-name" data-chat-name>Conversation</div><div class="chat-status">Instagram · direct message</div></div>
           <span class="chat-symbol">♡</span>
         </header>
         <div class="message-stream">
           <div class="day-stamp" data-social-date>11 SEPTEMBER 2026</div>
-          <div class="message">Your photo feels like the end of a movie.</div>
-          <div class="photo-message">
-            <div class="memory-photo" role="img" aria-label="Illustrated sunset path"><span class="sun"></span><span class="hill-one"></span><span class="hill-two"></span><span class="path"></span></div>
-            <div class="photo-caption">Photo shared to the chat</div>
-          </div>
-          <div class="message mine">It felt that way when I took it.</div>
-          <div class="message">Keep it. You will want to find this day again.</div>
-          <div class="message mine">That is exactly the plan ♡</div>
         </div>
         <div class="composer"><button class="composer-button" type="button" aria-label="Open camera">◎</button><div class="composer-field">Message...</div><button class="composer-button" type="button" aria-label="Send a heart">♡</button></div>
       </section>
@@ -1434,6 +1731,252 @@
   </template>
 
   <input class="hidden-date" id="datePicker" type="date" value="2026-09-11" aria-label="Choose a day">
+
+
+  <!-- Runs in a worker so a 17GB archive can be read without freezing the phone.
+       Kept as a script block rather than a separate file so the page stays one
+       document; it is turned into a worker through a blob URL. -->
+  <script id="archiveWorkerSource" type="javascript/worker">
+    const BLOCK = /<(?:div|section)[^>]*class="[^"]*\b_a6-g\b/;
+    const SENDER = /class="[^"]*\b_a6-h\b[^"]*\b_a6-i\b[^"]*"[^>]*>([\s\S]*?)<\/(?:h2|div)>/;
+    const TIME = /class="[^"]*\b_a6-o\b[^"]*"[^>]*>([\s\S]*?)<\/div>/;
+    const CONTENT = /class="[^"]*\b_a6-p\b[^"]*"[^>]*>([\s\S]*?)(?:<(?:footer|div class="[^"]*\b_a6-o\b)|$)/;
+    const MEDIA = /<(img|video|audio)\b[^>]*?src="([^"]+)"|<a\b[^>]*?href="([^"]+)"[^>]*>(?![\s\S]{0,40}<img)/g;
+    const TITLE = /<title>([\s\S]*?)<\/title>/;
+    const STAMP = /^([A-Z][a-z]{2}) (\d{1,2}), (\d{4}),? (\d{1,2}):(\d{2})(?::(\d{2}))? ?([ap])m$/i;
+
+    const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+    const ENTITIES = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'", nbsp: ' ' };
+    const MEDIA_KIND = {
+      jpg: 'photo', jpeg: 'photo', png: 'photo', webp: 'photo', heic: 'photo',
+      gif: 'gif', mp4: 'video', mov: 'video', webm: 'video',
+      aac: 'audio', ogg: 'audio', mp3: 'audio', m4a: 'audio', wav: 'audio',
+    };
+
+    let zips = [];
+
+    async function entryBytes(entry) {
+      const file = zips[entry.z];
+      const header = new DataView(await file.slice(entry.o, entry.o + 30).arrayBuffer());
+      const start = entry.o + 30 + header.getUint16(26, true) + header.getUint16(28, true);
+      const slice = file.slice(start, start + entry.c);
+      if (entry.m === 0) return slice;
+      return new Response(slice.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob();
+    }
+
+    function decodeEntities(text) {
+      return text.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (whole, body) => {
+        const key = body.toLowerCase();
+        if (ENTITIES[key] !== undefined) return ENTITIES[key];
+        if (key.startsWith('#x')) return String.fromCodePoint(parseInt(key.slice(2), 16));
+        if (key.startsWith('#')) return String.fromCodePoint(parseInt(key.slice(1), 10));
+        return whole;
+      });
+    }
+
+    function textOf(html) {
+      return decodeEntities(
+        html.replace(/<br\s*\/?>/gi, '\n').replace(/<\/(?:div|p|li)>/gi, '\n').replace(/<[^>]+>/g, '')
+      ).replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+    }
+
+    function parseStamp(raw) {
+      const match = STAMP.exec(textOf(raw).replace(/\s+/g, ' ').trim());
+      if (!match) return null;
+      const month = MONTHS[match[1].toLowerCase()];
+      if (!month) return null;
+      let hour = Number(match[4]) % 12;
+      if (match[7].toLowerCase() === 'p') hour += 12;
+      const pad = (value) => String(value).padStart(2, '0');
+      return {
+        date: `${match[3]}-${pad(month)}-${pad(Number(match[2]))}`,
+        time: `${pad(hour)}:${pad(match[5])}:${pad(Number(match[6] || 0))}`,
+      };
+    }
+
+    function splitBlocks(html) {
+      const parts = [];
+      let cursor = 0;
+      for (;;) {
+        const at = html.slice(cursor).search(BLOCK);
+        if (at === -1) break;
+        const start = cursor + at;
+        const next = html.slice(start + 8).search(BLOCK);
+        const end = next === -1 ? html.length : start + 8 + next;
+        parts.push(html.slice(start, end));
+        if (next === -1) break;
+        cursor = end;
+      }
+      return parts;
+    }
+
+    function tidyTitle(title, owner) {
+      const listed = /^Participants:\s*(.+)$/i.exec(title);
+      if (!listed) return title;
+      const others = listed[1].split(/,\s*|\s+and\s+/i).map((name) => name.trim()).filter((name) => name && name !== owner);
+      if (!others.length) return owner ? `${owner} (just you)` : title;
+      if (others.length <= 2) return others.join(' and ');
+      return `${others[0]} and ${others.length - 1} others`;
+    }
+
+    function sourceOf(path) {
+      if (path.startsWith('your_instagram_activity/')) return 'instagram';
+      if (path.startsWith('your_facebook_activity/')) return 'messenger';
+      return null;
+    }
+
+    self.onmessage = async (event) => {
+      const { zipFiles, entries } = event.data;
+      zips = zipFiles;
+
+      // group every message page by the thread folder that holds it
+      const threads = new Map();
+      for (const entry of entries) {
+        if (!/\/message_\d+\.html$/i.test(entry.p)) continue;
+        const source = sourceOf(entry.p);
+        if (!source) continue;
+        const folder = entry.p.slice(0, entry.p.lastIndexOf('/'));
+        if (!threads.has(folder)) threads.set(folder, { source, id: folder.split('/').pop(), files: [] });
+        threads.get(folder).files.push(entry);
+      }
+
+      const days = new Map();
+      const registry = {};
+      const counts = { messenger: null, instagram: null };
+      const senderThreads = { messenger: new Map(), instagram: new Map() };
+      const totals = { messenger: { threads: 0, messages: 0, attachments: 0, skipped: 0 },
+                       instagram: { threads: 0, messages: 0, attachments: 0, skipped: 0 } };
+
+      let done = 0;
+      for (const [folder, thread] of threads) {
+        const seen = new Set();
+        let title = thread.id;
+        let lastSender = null;
+        let messages = 0;
+
+        for (const entry of thread.files.sort((a, b) => (a.p < b.p ? -1 : 1))) {
+          const html = await (await entryBytes(entry)).text();
+          if (title === thread.id) {
+            const found = TITLE.exec(html);
+            if (found) title = textOf(found[1]).replace(/^(?:Your messages with|Conversation with)\s*/i, '').trim() || thread.id;
+          }
+
+          for (const block of splitBlocks(html)) {
+            const stampRaw = TIME.exec(block);
+            const stamp = stampRaw ? parseStamp(stampRaw[1]) : null;
+            if (!stamp) { totals[thread.source].skipped += 1; continue; }
+
+            const senderRaw = SENDER.exec(block);
+            if (senderRaw) lastSender = textOf(senderRaw[1]) || lastSender;
+            const from = lastSender || 'Unknown';
+            seen.add(from);
+
+            const contentRaw = CONTENT.exec(block);
+            const body = contentRaw ? contentRaw[1] : '';
+
+            const media = [];
+            MEDIA.lastIndex = 0;
+            let hit;
+            while ((hit = MEDIA.exec(body)) !== null) {
+              const uri = hit[2] || hit[3];
+              if (!uri || /^(?:https?:|#|mailto:|data:)/i.test(uri)) continue;
+              const ext = uri.split('?')[0].split('.').pop().toLowerCase();
+              media.push({ kind: MEDIA_KIND[ext] || 'file', path: decodeEntities(uri) });
+            }
+
+            const text = textOf(body.replace(/<(?:img|video|audio)\b[^>]*>/gi, ''));
+            if (!text && !media.length) { totals[thread.source].skipped += 1; continue; }
+
+            const record = { source: thread.source, thread: thread.id, time: stamp.time, from };
+            if (text) record.text = text;
+            if (media.length) { record.media = media; totals[thread.source].attachments += media.length; }
+
+            if (!days.has(stamp.date)) days.set(stamp.date, []);
+            days.get(stamp.date).push(record);
+            messages += 1;
+          }
+        }
+
+        for (const sender of seen) {
+          const tally = senderThreads[thread.source];
+          tally.set(sender, (tally.get(sender) || 0) + 1);
+        }
+
+        registry[thread.id] = { title, source: thread.source, folder, messages };
+        totals[thread.source].threads += 1;
+        totals[thread.source].messages += messages;
+
+        done += 1;
+        if (done % 10 === 0 || done === threads.size) {
+          self.postMessage({ type: 'progress', done, total: threads.size });
+        }
+      }
+
+      // whoever appears in the most conversations is the owner of the archive
+      const sources = {};
+      for (const name of ['messenger', 'instagram']) {
+        if (!totals[name].threads) continue;
+        let owner = null;
+        let best = 0;
+        for (const [sender, seen] of senderThreads[name]) {
+          if (seen > best) { owner = sender; best = seen; }
+        }
+        sources[name] = Object.assign({ owner, ownerThreads: best }, totals[name]);
+      }
+
+      for (const thread of Object.values(registry)) {
+        thread.title = tidyTitle(thread.title, sources[thread.source] && sources[thread.source].owner);
+      }
+
+      // Shape each day the way the interface reads it, handing them back in
+      // batches. Posting 1.29 million messages in one message would hold the
+      // whole archive twice over while the clone is made.
+      const dayIndex = {};
+      let batch = [];
+
+      const flush = () => new Promise((resolve) => {
+        if (!batch.length) { resolve(); return; }
+        const sending = batch;
+        batch = [];
+        self.addEventListener('message', function stored(event) {
+          if (!event.data || event.data.type !== 'stored') return;
+          self.removeEventListener('message', stored);
+          resolve();
+        });
+        self.postMessage({ type: 'days', days: sending });
+      });
+
+      for (const [date, records] of days) {
+        records.sort((a, b) => (a.time < b.time ? -1 : a.time > b.time ? 1 : 0));
+        const grouped = new Map();
+        const summary = {};
+        for (const record of records) {
+          const key = `${record.source}:${record.thread}`;
+          if (!grouped.has(key)) {
+            grouped.set(key, {
+              source: record.source,
+              thread: record.thread,
+              title: (registry[record.thread] && registry[record.thread].title) || record.thread,
+              messages: [],
+            });
+          }
+          const { source, thread, ...message } = record;
+          grouped.get(key).messages.push(message);
+          if (!summary[source]) summary[source] = { threads: 0, messages: 0, media: 0 };
+          summary[source].messages += 1;
+          summary[source].media += record.media ? record.media.length : 0;
+        }
+        for (const conversation of grouped.values()) summary[conversation.source].threads += 1;
+        dayIndex[date] = summary;
+        batch.push({ date, conversations: [...grouped.values()] });
+        days.set(date, null);
+        if (batch.length >= 150) await flush();
+      }
+      await flush();
+
+      self.postMessage({ type: 'done', index: { sources, threads: registry, days: dayIndex } });
+    };
+  </script>
 
   <script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
   <script>
@@ -1468,6 +2011,7 @@
     const desktopAppPanel = document.getElementById('desktopAppPanel');
     const desktopSocialContent = document.getElementById('desktopSocialContent');
     const mapsTemplate = document.getElementById('mapsTemplate');
+    const memoryTemplate = document.getElementById('memoryTemplate');
     const messengerTemplate = document.getElementById('messengerTemplate');
     const instagramTemplate = document.getElementById('instagramTemplate');
     const spotifyCard = document.getElementById('spotifyCard');
@@ -1494,6 +2038,17 @@
     let timelineArchive = null;
     let timelineFileName = '';
     let timelineDates = new Set();
+    let activeMemoryController = null;
+    let pendingFolderHandle = null;
+    let archiveSource = null;
+    let archiveFound = { messenger: null, instagram: null, maps: null };
+    let archiveDays = new Map();
+    let archiveDayDir = 'days/';
+    let archiveSignature = null;
+    let archiveThreads = {};
+    const dayCache = new Map();
+    const mediaUrls = new Map();
+    let mediaObserver = null;
     const desktopSocialQuery = window.matchMedia('(min-width: 900px)');
     const MAP_MAX_POINTS = 6000;
     const MAP_TRAIL_FRACTION = 0.18;
@@ -1798,33 +2353,6 @@
       });
     }
 
-    async function importTimelineFile(file, controller) {
-      if (!file) return;
-      controller.showEmpty('Reading your Timeline…', 'Large exports can take a moment. Everything stays in this browser.', file.name);
-      try {
-        const data = JSON.parse(await file.text());
-        const dates = buildTimelineDateIndex(data);
-        if (!dates.size) throw new Error('No dated Timeline entries were found in this file.');
-        timelineArchive = data;
-        timelineDates = dates;
-        timelineFileName = file.name;
-        const currentIso = toLocalIso(selectedDate);
-        if (!timelineDates.has(currentIso)) {
-          const newest = [...timelineDates].sort().reverse()[0];
-          updateSelectedDate(parseLocalDate(newest));
-        } else {
-          renderCalendar();
-          controller.setDate(selectedDate);
-        }
-      } catch (error) {
-        controller.showEmpty(
-          'This path could not wake up',
-          error instanceof Error ? error.message : 'The Timeline file could not be read.',
-          file.name
-        );
-      }
-    }
-
     class MapController {
       constructor(root) {
         this.root = root;
@@ -1852,9 +2380,7 @@
         this.resizeObserver = null;
 
         root.querySelectorAll('[data-close-maps]').forEach((button) => button.addEventListener('click', closeSocialApp));
-        root.querySelectorAll('[data-timeline-input]').forEach((input) => {
-          input.addEventListener('change', (event) => importTimelineFile(event.target.files && event.target.files[0], this));
-        });
+        root.querySelectorAll('[data-open-memory]').forEach((button) => button.addEventListener('click', openMemoryApp));
         this.playButton.addEventListener('click', () => this.togglePlay());
         this.range.addEventListener('input', () => this.scrub(Number(this.range.value)));
         this.setDate(selectedDate);
@@ -2076,11 +2602,24 @@
     }
 
     function memoryTypesFor(date) {
-      const seed = dayNumber(date);
+      const iso = toLocalIso(date);
       const types = [];
+
+      // Once a folder is connected the calendar stops inventing memories and
+      // marks only what the archive actually holds. Photos stay illustrative
+      // until their importer exists.
+      if (archiveSource) {
+        const day = archiveDays.get(iso);
+        if (day && day.messenger) types.push('messages');
+        if (day && day.instagram) types.push('instagram');
+        if (timelineDates.has(iso)) types.push('maps');
+        return types.slice(0, 3);
+      }
+
+      const seed = dayNumber(date);
       if (seed % 3 === 0) types.push('messages');
       if (seed % 7 === 0) types.push('instagram');
-      if (timelineDates.has(toLocalIso(date))) types.push('maps');
+      if (timelineDates.has(iso)) types.push('maps');
       if (seed % 4 === 0) types.push('photos');
       return types.slice(0, 3);
     }
@@ -2096,6 +2635,7 @@
       if (animate) animateWindback();
       renderCalendar(animate);
       if (activeMapController) activeMapController.setDate(selectedDate);
+      if (activeSocialApp === 'Messenger' || activeSocialApp === 'Instagram') renderSocialSurface();
     }
 
     function renderYearGrid() {
@@ -2261,9 +2801,609 @@
       updateSelectedDate(parseLocalDate(datePicker.value));
     });
 
+    // The Memory Box owns every import. Two backends sit behind one small
+    // contract — the File System Access API when the page is served, a plain
+    // folder input when it is opened straight from disk — so nothing else in
+    // the phone needs to know which door the archive came through.
+
+    const ARCHIVE_DB = 'little-paths-archive';
+    const ARCHIVE_STORE = 'folders';
+    const DAYS_STORE = 'days';
+    const ARCHIVE_KEY = 'chosen';
+    const TIMELINE_PATTERN = /^timeline.*\.json$/i;
+    const INDEX_CANDIDATES = ['archive/index.json', 'index.json'];
+
+    const canPickDirectory = typeof window.showDirectoryPicker === 'function';
+
+    function openHandleStore() {
+      return new Promise((resolve, reject) => {
+        if (!window.indexedDB) {
+          reject(new Error('no indexeddb'));
+          return;
+        }
+        const request = indexedDB.open(ARCHIVE_DB, 2);
+        request.onupgradeneeded = () => {
+          const database = request.result;
+          if (!database.objectStoreNames.contains(ARCHIVE_STORE)) database.createObjectStore(ARCHIVE_STORE);
+          if (!database.objectStoreNames.contains(DAYS_STORE)) database.createObjectStore(DAYS_STORE);
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    function readBuilt(key) {
+      return openHandleStore().then((database) => new Promise((resolve, reject) => {
+        const request = database.transaction(DAYS_STORE, 'readonly').objectStore(DAYS_STORE).get(key);
+        request.onsuccess = () => resolve(request.result || null);
+        request.onerror = () => reject(request.error);
+      })).catch(() => null);
+    }
+
+    async function storeDays(signature, days) {
+      const database = await openHandleStore();
+      await new Promise((resolve, reject) => {
+        const transaction = database.transaction(DAYS_STORE, 'readwrite');
+        const store = transaction.objectStore(DAYS_STORE);
+        for (const day of days) store.put(day.conversations, `${signature}|${day.date}`);
+        transaction.oncomplete = resolve;
+        transaction.onerror = () => reject(transaction.error);
+      });
+    }
+
+    // Written last: its presence is what marks the archive as complete, so an
+    // interrupted build is rebuilt rather than read back half-finished.
+    async function storeIndex(signature, index) {
+      const database = await openHandleStore();
+      await new Promise((resolve, reject) => {
+        const transaction = database.transaction(DAYS_STORE, 'readwrite');
+        transaction.objectStore(DAYS_STORE).put(index, `${signature}|index`);
+        transaction.oncomplete = resolve;
+        transaction.onerror = () => reject(transaction.error);
+      });
+    }
+
+    async function storeFolderHandle(handle) {
+      try {
+        const database = await openHandleStore();
+        await new Promise((resolve, reject) => {
+          const transaction = database.transaction(ARCHIVE_STORE, 'readwrite');
+          transaction.objectStore(ARCHIVE_STORE).put(handle, ARCHIVE_KEY);
+          transaction.oncomplete = resolve;
+          transaction.onerror = () => reject(transaction.error);
+        });
+      } catch (error) {
+        // Remembering the folder is a convenience; failing to is not fatal.
+      }
+    }
+
+    async function recallFolderHandle() {
+      try {
+        const database = await openHandleStore();
+        return await new Promise((resolve, reject) => {
+          const request = database.transaction(ARCHIVE_STORE, 'readonly').objectStore(ARCHIVE_STORE).get(ARCHIVE_KEY);
+          request.onsuccess = () => resolve(request.result || null);
+          request.onerror = () => reject(request.error);
+        });
+      } catch (error) {
+        return null;
+      }
+    }
+
+    // Facebook stores rather than compresses these exports, so an entry is just
+    // a byte range. The parts can be read as one folder without unpacking 17GB
+    // onto the disk first.
+    async function readZipEntries(file, zipIndex) {
+      const tailSize = Math.min(65557, file.size);
+      const tail = new DataView(await file.slice(file.size - tailSize, file.size).arrayBuffer());
+
+      let eocd = -1;
+      for (let at = tail.byteLength - 22; at >= 0; at -= 1) {
+        if (tail.getUint32(at, true) === 0x06054b50) { eocd = at; break; }
+      }
+      if (eocd === -1) throw new Error(`${file.name} could not be read as a zip`);
+
+      let size = tail.getUint32(eocd + 12, true);
+      let offset = tail.getUint32(eocd + 16, true);
+
+      // zip64 puts the real numbers in a record the locator points at
+      if (eocd >= 20 && tail.getUint32(eocd - 20, true) === 0x07064b50) {
+        const at = Number(tail.getBigUint64(eocd - 12, true));
+        const record = new DataView(await file.slice(at, at + 56).arrayBuffer());
+        size = Number(record.getBigUint64(40, true));
+        offset = Number(record.getBigUint64(48, true));
+      }
+
+      const directory = await file.slice(offset, offset + size).arrayBuffer();
+      const view = new DataView(directory);
+      const decoder = new TextDecoder();
+      const entries = [];
+      let cursor = 0;
+
+      while (cursor + 46 <= directory.byteLength && view.getUint32(cursor, true) === 0x02014b50) {
+        const method = view.getUint16(cursor + 10, true);
+        const compressed = view.getUint32(cursor + 20, true);
+        const nameLength = view.getUint16(cursor + 28, true);
+        const extraLength = view.getUint16(cursor + 30, true);
+        const commentLength = view.getUint16(cursor + 32, true);
+        const localOffset = view.getUint32(cursor + 42, true);
+        const path = decoder.decode(new Uint8Array(directory, cursor + 46, nameLength));
+        if (!path.endsWith('/')) entries.push({ p: path, z: zipIndex, o: localOffset, c: compressed, m: method });
+        cursor += 46 + nameLength + extraLength + commentLength;
+      }
+
+      return entries;
+    }
+
+    async function zipEntryBlob(zipFiles, entry) {
+      const file = zipFiles[entry.z];
+      const header = new DataView(await file.slice(entry.o, entry.o + 30).arrayBuffer());
+      const start = entry.o + 30 + header.getUint16(26, true) + header.getUint16(28, true);
+      const slice = file.slice(start, start + entry.c);
+      if (entry.m === 0) return slice;
+      if (typeof DecompressionStream !== 'function') throw new Error('compressed zip entries are not supported here');
+      return new Response(slice.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob();
+    }
+
+    function zipSource(zipFiles, entries) {
+      const byPath = new Map(entries.map((entry) => [entry.p, entry]));
+      return {
+        kind: 'zip',
+        name: zipFiles.map((file) => file.name).join(', '),
+        async getFile(filePath) {
+          const entry = byPath.get(filePath);
+          if (!entry) return null;
+          return new File([await zipEntryBlob(zipFiles, entry)], filePath.split('/').pop());
+        },
+        async findTimeline() {
+          return null;
+        },
+      };
+    }
+
+    // The folder still holds the Timeline file and any prebuilt archive; the
+    // zips hold the messages and their media. One reader over both.
+    function pairedSource(folder, zips) {
+      return {
+        kind: 'paired',
+        name: folder.name,
+        folder,
+        async getFile(filePath) {
+          return (await zips.getFile(filePath)) || folder.getFile(filePath);
+        },
+        findTimeline: () => folder.findTimeline(),
+        findZips: () => (folder.findZips ? folder.findZips() : Promise.resolve([])),
+      };
+    }
+
+    function directorySource(handle) {
+      return {
+        kind: 'directory',
+        name: handle.name,
+        handle,
+        async getFile(filePath) {
+          const segments = filePath.split('/').filter(Boolean);
+          const fileName = segments.pop();
+          let folder = handle;
+          try {
+            for (const segment of segments) folder = await folder.getDirectoryHandle(segment);
+            return await (await folder.getFileHandle(fileName)).getFile();
+          } catch (error) {
+            return null;
+          }
+        },
+        async findZips() {
+          const found = [];
+          const scan = async (folder, depth) => {
+            for await (const [name, entry] of folder.entries()) {
+              if (entry.kind === 'file' && /\.zip$/i.test(name)) found.push(await entry.getFile());
+              else if (entry.kind === 'directory' && depth > 0) await scan(entry, depth - 1);
+            }
+          };
+          try {
+            await scan(handle, 1);
+          } catch (error) {
+            return [];
+          }
+          return found;
+        },
+        async findTimeline() {
+          const scan = async (folder, prefix, depth) => {
+            for await (const [name, entry] of folder.entries()) {
+              if (entry.kind === 'file' && TIMELINE_PATTERN.test(name)) return `${prefix}${name}`;
+              if (entry.kind === 'directory' && depth > 0) {
+                const nested = await scan(entry, `${prefix}${name}/`, depth - 1);
+                if (nested) return nested;
+              }
+            }
+            return null;
+          };
+          try {
+            return await scan(handle, '', 1);
+          } catch (error) {
+            return null;
+          }
+        },
+      };
+    }
+
+    function fileListSource(files) {
+      const byPath = new Map();
+      let rootName = 'Selected folder';
+      for (const file of files) {
+        const relative = file.webkitRelativePath || file.name;
+        const segments = relative.split('/');
+        if (segments.length > 1) rootName = segments[0];
+        byPath.set(segments.slice(1).join('/') || file.name, file);
+      }
+      return {
+        kind: 'files',
+        name: rootName,
+        async getFile(filePath) {
+          return byPath.get(filePath) || null;
+        },
+        async findZips() {
+          return [...byPath.values()].filter((file) => /\.zip$/i.test(file.name));
+        },
+        async findTimeline() {
+          for (const filePath of byPath.keys()) {
+            const segments = filePath.split('/');
+            if (segments.length <= 2 && TIMELINE_PATTERN.test(segments[segments.length - 1])) return filePath;
+          }
+          return null;
+        },
+      };
+    }
+
+    function describeRange(first, last) {
+      if (!first || !last) return '';
+      const label = (iso) => parseLocalDate(iso).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+      return `${label(first)} – ${label(last)}`;
+    }
+
+    function summariseSources(data, found) {
+      const dates = Object.keys(data.days).sort();
+      for (const name of ['messenger', 'instagram']) {
+        const summary = data.sources && data.sources[name];
+        if (!summary) continue;
+        const own = dates.filter((date) => data.days[date][name]);
+        found[name] = {
+          threads: summary.threads,
+          messages: summary.messages,
+          attachments: summary.attachments,
+          owner: summary.owner,
+          mediaDir: summary.mediaDir,
+          days: own.length,
+          range: describeRange(own[0], own[own.length - 1]),
+        };
+      }
+      return new Map(Object.entries(data.days));
+    }
+
+    async function readArchiveIndex(source) {
+      for (const candidate of INDEX_CANDIDATES) {
+        const file = await source.getFile(candidate);
+        if (!file) continue;
+        const data = JSON.parse(await file.text());
+        if (data && data.days) return { data, path: candidate };
+      }
+      return null;
+    }
+
+    // Reads the chosen folder and reports what it holds. Anything missing is
+    // reported rather than thrown: a folder with only a Timeline file is a
+    // perfectly good archive.
+    async function inspectArchive(source) {
+      const found = { messenger: null, instagram: null, maps: null };
+      const problems = [];
+      let days = new Map();
+      let dayDir = 'days/';
+      let threads = {};
+
+      try {
+        const index = await readArchiveIndex(source);
+        if (index) {
+          const base = index.path.includes('/') ? index.path.slice(0, index.path.lastIndexOf('/') + 1) : '';
+          dayDir = `${base}days/`;
+          threads = index.data.threads || {};
+          days = summariseSources(index.data, found);
+        }
+      } catch (error) {
+        problems.push('The message archive could not be read. Run the normalizer again and reconnect.');
+      }
+
+      try {
+        const timelinePath = await source.findTimeline();
+        if (timelinePath) {
+          const file = await source.getFile(timelinePath);
+          const data = JSON.parse(await file.text());
+          const dates = buildTimelineDateIndex(data);
+          if (dates.size) {
+            const sorted = [...dates].sort();
+            found.maps = {
+              data,
+              dates,
+              fileName: timelinePath,
+              days: dates.size,
+              range: describeRange(sorted[0], sorted[sorted.length - 1]),
+            };
+          } else {
+            problems.push('A Timeline file was found but held no dated entries.');
+          }
+        }
+      } catch (error) {
+        problems.push('The Timeline file could not be read.');
+      }
+
+      return { found, days, problems, dayDir, threads };
+    }
+
+    function runArchiveWorker(zipFiles, entries, onProgress, onDays) {
+      return new Promise((resolve, reject) => {
+        const code = document.getElementById('archiveWorkerSource').textContent;
+        const url = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+        const worker = new Worker(url);
+
+        const finish = (settle, value) => {
+          worker.terminate();
+          URL.revokeObjectURL(url);
+          settle(value);
+        };
+
+        worker.onmessage = async (event) => {
+          const message = event.data;
+          if (message.type === 'progress') {
+            onProgress(message);
+            return;
+          }
+          if (message.type === 'days') {
+            try {
+              await onDays(message.days);
+              worker.postMessage({ type: 'stored' });
+            } catch (error) {
+              finish(reject, error);
+            }
+            return;
+          }
+          finish(resolve, message.index);
+        };
+
+        worker.onerror = (error) => finish(reject, new Error(error.message || 'the archive could not be built'));
+        worker.postMessage({ zipFiles, entries });
+      });
+    }
+
+    // A folder can hold a prebuilt archive, or the raw export zips, or both.
+    // A prebuilt archive wins because it is already done; otherwise the zips
+    // are read in place and the result is kept for next time.
+    async function connectArchive(folderSource, onBusy = () => {}) {
+      const report = await inspectArchive(folderSource);
+      let source = folderSource;
+      let signature = null;
+
+      if (!report.found.messenger && !report.found.instagram && folderSource.findZips) {
+        const zipFiles = await folderSource.findZips();
+        if (zipFiles.length) {
+          onBusy('Opening your exports…');
+          const entries = [];
+          for (let index = 0; index < zipFiles.length; index += 1) {
+            entries.push(...await readZipEntries(zipFiles[index], index));
+          }
+
+          signature = zipFiles.map((file) => `${file.name}:${file.size}`).sort().join('|');
+          let data = await readBuilt(`${signature}|index`);
+
+          if (!data) {
+            let stored = 0;
+            data = await runArchiveWorker(
+              zipFiles,
+              entries,
+              (progress) => onBusy(`Reading conversation ${progress.done.toLocaleString()} of ${progress.total.toLocaleString()}…`),
+              async (batch) => {
+                stored += batch.length;
+                onBusy(`Putting away day ${stored.toLocaleString()}…`);
+                await storeDays(signature, batch);
+              }
+            );
+            await storeIndex(signature, data);
+          }
+
+          report.days = summariseSources(data, report.found);
+          report.threads = data.threads;
+          source = pairedSource(folderSource, zipSource(zipFiles, entries));
+        }
+      }
+
+      adoptArchive(source, report, signature);
+      return report;
+    }
+
+    function adoptArchive(source, report, signature = null) {
+      archiveSource = source;
+      archiveSignature = signature;
+      archiveFound = report.found;
+      archiveDays = report.days;
+      archiveDayDir = report.dayDir;
+      archiveThreads = report.threads;
+      dayCache.clear();
+      releaseMedia();
+
+      if (report.found.maps) {
+        timelineArchive = report.found.maps.data;
+        timelineDates = report.found.maps.dates;
+        timelineFileName = report.found.maps.fileName;
+      }
+
+      const currentIso = toLocalIso(selectedDate);
+      const hasToday = archiveDays.has(currentIso) || timelineDates.has(currentIso);
+      if (!hasToday) {
+        const everything = [...archiveDays.keys(), ...timelineDates].sort();
+        const newest = everything[everything.length - 1];
+        if (newest) {
+          updateSelectedDate(parseLocalDate(newest));
+          return;
+        }
+      }
+      renderCalendar();
+      if (activeMapController) activeMapController.setDate(selectedDate);
+    }
+
+    class MemoryController {
+      constructor(root) {
+        this.root = root;
+        this.headline = root.querySelector('[data-memory-headline]');
+        this.copy = root.querySelector('[data-memory-copy]');
+        this.connect = root.querySelector('[data-memory-connect]');
+        this.connectLabel = root.querySelector('[data-memory-connect-label]');
+        this.fallbackInput = root.querySelector('[data-memory-fallback-input]');
+        this.folder = root.querySelector('[data-memory-folder]');
+        this.path = root.querySelector('[data-memory-path]');
+        this.swap = root.querySelector('[data-memory-swap]');
+        this.alert = root.querySelector('[data-memory-alert]');
+        this.busy = false;
+
+        root.querySelectorAll('[data-close-memory]').forEach((button) => button.addEventListener('click', closeSocialApp));
+        this.connect.addEventListener('click', () => this.choose());
+        this.swap.addEventListener('click', () => this.choose());
+        this.fallbackInput.addEventListener('change', (event) => {
+          const files = event.target.files;
+          if (files && files.length) this.load(fileListSource(files));
+        });
+
+        this.render();
+      }
+
+      setBusy(message) {
+        this.busy = Boolean(message);
+        this.connect.disabled = this.busy;
+        if (message) this.connectLabel.textContent = message;
+      }
+
+      showAlert(lines) {
+        if (!lines.length) {
+          this.alert.hidden = true;
+          return;
+        }
+        this.alert.hidden = false;
+        this.alert.textContent = lines.join(' ');
+      }
+
+      async choose() {
+        if (this.busy) return;
+        this.showAlert([]);
+
+        if (pendingFolderHandle) {
+          const handle = pendingFolderHandle;
+          const granted = await handle.requestPermission({ mode: 'read' });
+          if (granted !== 'granted') {
+            this.showAlert(['This phone still needs permission to read that folder.']);
+            return;
+          }
+          pendingFolderHandle = null;
+          this.load(directorySource(handle));
+          return;
+        }
+
+        if (!canPickDirectory) {
+          this.fallbackInput.click();
+          return;
+        }
+
+        try {
+          const handle = await window.showDirectoryPicker({ mode: 'read', id: 'little-paths-archive' });
+          await storeFolderHandle(handle);
+          this.load(directorySource(handle));
+        } catch (error) {
+          if (error && error.name !== 'AbortError') this.showAlert(['That folder could not be opened.']);
+        }
+      }
+
+      async load(source) {
+        this.setBusy('Reading your archive…');
+        try {
+          const report = await connectArchive(source, (message) => this.setBusy(message));
+          this.showAlert(report.problems);
+        } catch (error) {
+          this.showAlert([error && error.message ? error.message : 'That folder could not be read.']);
+        }
+        this.setBusy('');
+        this.render();
+      }
+
+      render() {
+        const connected = Boolean(archiveSource);
+        const waiting = Boolean(pendingFolderHandle);
+
+        if (!this.busy) {
+          this.connectLabel.textContent = waiting
+            ? `Reconnect ${pendingFolderHandle.name}`
+            : connected ? 'Choose a different folder' : 'Choose archive folder';
+        }
+
+        this.headline.textContent = connected ? 'Your archive is here' : 'Bring your archive home';
+        this.copy.textContent = connected
+          ? 'These are the memories this phone can reach. Choose a day in Windback and open an app to visit it.'
+          : waiting
+            ? 'This phone remembers your folder but needs your permission again to read it.'
+            : 'Choose the folder holding your exports. The zip files can stay exactly as they downloaded — nothing is unpacked, uploaded, or copied. This phone just reads them where they sit.';
+
+        this.folder.hidden = !connected;
+        if (connected) this.path.textContent = archiveSource.name;
+        this.connect.hidden = connected;
+
+        for (const card of this.root.querySelectorAll('[data-memory-source]')) {
+          const name = card.dataset.memorySource;
+          const summary = archiveFound[name];
+          const note = card.querySelector('[data-memory-note]');
+          const state = card.querySelector('[data-memory-state]');
+
+          card.classList.toggle('found', Boolean(summary));
+          card.classList.toggle('missing', !summary);
+          state.textContent = summary ? '✓' : '·';
+
+          if (!summary) {
+            note.textContent = connected ? 'Nothing found in this folder' : 'Not found yet';
+            continue;
+          }
+
+          if (name === 'maps') {
+            note.innerHTML = `<strong>${summary.days.toLocaleString()}</strong> days of places · ${summary.range}`;
+          } else {
+            note.innerHTML = `<strong>${summary.messages.toLocaleString()}</strong> messages · ${summary.threads} chats · ${summary.range}`;
+          }
+        }
+      }
+
+      destroy() {
+        // Nothing to tear down; the archive outlives the surface.
+      }
+    }
+
+    async function restoreRememberedFolder() {
+      if (!canPickDirectory) return;
+      const handle = await recallFolderHandle();
+      if (!handle) return;
+      try {
+        const permission = await handle.queryPermission({ mode: 'read' });
+        if (permission === 'granted') {
+          await connectArchive(directorySource(handle));
+        } else {
+          pendingFolderHandle = handle;
+        }
+      } catch (error) {
+        pendingFolderHandle = null;
+      }
+      if (activeMemoryController) activeMemoryController.render();
+    }
+
     function hideSocialSurfaces() {
       if (activeMapController) activeMapController.destroy();
       activeMapController = null;
+      if (activeMemoryController) activeMemoryController.destroy();
+      activeMemoryController = null;
+      if (mediaObserver) mediaObserver.disconnect();
+      mediaObserver = null;
+      releaseMedia();
       socialPhoneView.classList.remove('open');
       socialPhoneView.setAttribute('aria-hidden', 'true');
       desktopAppPanel.classList.remove('open');
@@ -2291,7 +3431,285 @@
       }
     }
 
-    function bindSocialView(root, mode) {
+    function renderMemorySurface() {
+      hideSocialSurfaces();
+      const fragment = memoryTemplate.content.cloneNode(true);
+
+      if (desktopSocialQuery.matches) {
+        desktopSocialContent.append(fragment);
+        desktopAppPanel.classList.add('open');
+        desktopAppPanel.setAttribute('aria-hidden', 'false');
+        stage.classList.add('companion-open');
+        activeMemoryController = new MemoryController(desktopSocialContent.querySelector('.memory-app'));
+      } else {
+        phoneSocialContent.append(fragment);
+        socialPhoneView.classList.add('open');
+        socialPhoneView.setAttribute('aria-hidden', 'false');
+        activeMemoryController = new MemoryController(phoneSocialContent.querySelector('.memory-app'));
+      }
+    }
+
+    function openMemoryApp() {
+      activeSocialApp = 'Memory Box';
+      closeApp();
+      renderMemorySurface();
+    }
+
+    // ---- Reading one day out of the archive --------------------------------
+
+    async function loadDay(iso) {
+      if (dayCache.has(iso)) return dayCache.get(iso);
+      if (!archiveSource) return null;
+      let day = { date: iso, conversations: [] };
+      try {
+        if (archiveSignature) {
+          const conversations = await readBuilt(`${archiveSignature}|${iso}`);
+          if (conversations) day = { date: iso, conversations };
+        } else {
+          const file = await archiveSource.getFile(`${archiveDayDir}${iso}.json`);
+          if (file) day = JSON.parse(await file.text());
+        }
+      } catch (error) {
+        // A missing or damaged day reads as a quiet day rather than an error.
+      }
+      dayCache.set(iso, day);
+      return day;
+    }
+
+    // Media lives beside the archive rather than inside it, so paths resolve
+    // against the export folder the normalizer recorded.
+    async function mediaUrl(sourceName, relativePath) {
+      const key = `${sourceName}:${relativePath}`;
+      if (mediaUrls.has(key)) return mediaUrls.get(key);
+      if (!archiveSource) return null;
+      const folder = archiveFound[sourceName] && archiveFound[sourceName].mediaDir;
+      const file = (folder && await archiveSource.getFile(`${folder}/${relativePath}`))
+        || await archiveSource.getFile(relativePath);
+      if (!file) return null;
+      const url = URL.createObjectURL(file);
+      mediaUrls.set(key, url);
+      return url;
+    }
+
+    function releaseMedia() {
+      for (const url of mediaUrls.values()) URL.revokeObjectURL(url);
+      mediaUrls.clear();
+    }
+
+    const THREAD_COLOURS = ['#ef8a7d', '#f0c86c', '#87abc5', '#9fb798', '#aaa0cf', '#d98983'];
+
+    function threadColour(id) {
+      let total = 0;
+      for (let index = 0; index < id.length; index += 1) total += id.charCodeAt(index);
+      return THREAD_COLOURS[total % THREAD_COLOURS.length];
+    }
+
+    function threadInitial(title) {
+      const letter = [...String(title)].find((character) => /[\p{L}\p{N}]/u.test(character));
+      return (letter || '\u00b7').toUpperCase();
+    }
+
+    function clockOf(time) {
+      return String(time || '').slice(0, 5);
+    }
+
+    function mediaNoun(media) {
+      const kinds = media.map((item) => item.kind);
+      if (kinds.includes('video')) return media.length > 1 ? `${media.length} videos` : 'a video';
+      if (kinds.includes('audio')) return 'a voice note';
+      if (kinds.includes('gif')) return 'a GIF';
+      if (kinds.includes('photo')) return media.length > 1 ? `${media.length} photos` : 'a photo';
+      return media.length > 1 ? `${media.length} files` : 'a file';
+    }
+
+    function previewOf(message, owner) {
+      const mine = message.from === owner;
+      if (message.text) return `${mine ? 'You: ' : ''}${message.text}`;
+      if (message.media && message.media.length) return `${mine ? 'You sent' : 'Sent'} ${mediaNoun(message.media)}`;
+      return mine ? 'You sent something' : 'Sent something';
+    }
+
+    function socialEmptyBlock(kind) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'social-empty';
+
+      const art = document.createElement('div');
+      art.className = 'social-empty-art';
+      art.setAttribute('aria-hidden', 'true');
+
+      const heading = document.createElement('h3');
+      const copy = document.createElement('p');
+      wrapper.append(art, heading, copy);
+
+      if (kind === 'disconnected') {
+        heading.textContent = 'Nothing connected yet';
+        copy.textContent = 'Your conversations live in the Memory Box. Connect your archive folder and this day will fill itself in.';
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = 'Open the Memory Box';
+        button.addEventListener('click', openMemoryApp);
+        wrapper.append(button);
+      } else {
+        heading.textContent = 'A quiet day';
+        copy.textContent = 'Nothing was said here on this day. Choose another date in Windback \u2014 the coloured dots show where the talking happened.';
+      }
+
+      return wrapper;
+    }
+
+    function buildThreadButton(conversation, owner) {
+      const last = conversation.messages[conversation.messages.length - 1];
+      const colour = threadColour(conversation.thread);
+
+      const button = document.createElement('button');
+      button.className = 'thread';
+      button.type = 'button';
+
+      const avatar = document.createElement('span');
+      avatar.className = 'avatar';
+      avatar.style.setProperty('--avatar', colour);
+      avatar.textContent = threadInitial(conversation.title);
+
+      const copy = document.createElement('span');
+      copy.className = 'thread-copy';
+      const name = document.createElement('span');
+      name.className = 'thread-name';
+      name.textContent = conversation.title;
+      const preview = document.createElement('span');
+      preview.className = 'thread-preview';
+      preview.textContent = previewOf(last, owner);
+      copy.append(name, preview);
+
+      const meta = document.createElement('span');
+      meta.className = 'thread-count';
+      const clock = document.createElement('b');
+      clock.textContent = clockOf(last.time);
+      meta.append(clock, document.createTextNode(`${conversation.messages.length} msg`));
+
+      button.append(avatar, copy, meta);
+      return button;
+    }
+
+    async function fillMedia(node) {
+      const url = await mediaUrl(node.dataset.mediaSource, node.dataset.mediaPath);
+      node.classList.remove('waiting');
+
+      if (!url) {
+        node.className = 'message-file';
+        node.replaceChildren(document.createElement('i'), document.createTextNode('This file is not in the folder'));
+        return;
+      }
+
+      const kind = node.dataset.mediaKind;
+      if (kind === 'video' || kind === 'audio') {
+        const player = document.createElement(kind);
+        player.controls = true;
+        player.preload = 'metadata';
+        player.src = url;
+        if (kind === 'audio') node.className = 'message-file';
+        node.replaceChildren(player);
+        return;
+      }
+
+      // The slot is only filled once it is near the viewport, so the image is
+      // already as lazy as it needs to be; loading="lazy" on top of that just
+      // defers a blob that is sitting in memory.
+      const image = document.createElement('img');
+      image.decoding = 'async';
+      image.alt = '';
+      image.src = url;
+      node.replaceChildren(image);
+    }
+
+    function buildMediaGroup(message, sourceName, mine) {
+      const group = document.createElement('div');
+      group.className = `message-media${mine ? ' mine' : ''}`;
+
+      for (const item of message.media) {
+        const slot = document.createElement('div');
+        if (item.kind === 'file') {
+          slot.className = 'message-file';
+          slot.append(document.createElement('i'), document.createTextNode(item.path.split('/').pop()));
+        } else {
+          slot.className = 'message-photo waiting';
+          slot.dataset.mediaPath = item.path;
+          slot.dataset.mediaKind = item.kind;
+          slot.dataset.mediaSource = sourceName;
+        }
+        group.append(slot);
+      }
+
+      return group;
+    }
+
+    function renderConversation(root, conversation, owner, sourceName) {
+      const stream = root.querySelector('.message-stream');
+      const others = new Set(conversation.messages.map((message) => message.from).filter((from) => from !== owner));
+      const isGroup = others.size > 1;
+
+      const stamp = document.createElement('div');
+      stamp.className = 'day-stamp';
+      stamp.textContent = selectedDate
+        .toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+        .toUpperCase();
+
+      const pieces = [stamp];
+      let previousSender = null;
+
+      for (const message of conversation.messages) {
+        const mine = message.from === owner;
+
+        // In a group the voices need naming; in a pair the bubbles say enough.
+        if (isGroup && !mine && message.from !== previousSender) {
+          const label = document.createElement('div');
+          label.className = 'message-sender';
+          label.textContent = message.from;
+          pieces.push(label);
+        }
+        previousSender = message.from;
+
+        if (message.text) {
+          const bubble = document.createElement('div');
+          bubble.className = `message${mine ? ' mine' : ''}`;
+          bubble.append(document.createTextNode(message.text));
+          const time = document.createElement('span');
+          time.className = 'message-time';
+          time.textContent = clockOf(message.time);
+          bubble.append(time);
+          pieces.push(bubble);
+        }
+
+        if (message.media && message.media.length) pieces.push(buildMediaGroup(message, sourceName, mine));
+      }
+
+      stream.replaceChildren(...pieces);
+
+      if (mediaObserver) mediaObserver.disconnect();
+      mediaObserver = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          mediaObserver.unobserve(entry.target);
+          fillMedia(entry.target);
+        }
+      }, { root: stream, rootMargin: '300px' });
+      stream.querySelectorAll('[data-media-path]').forEach((slot) => mediaObserver.observe(slot));
+
+      root.querySelectorAll('[data-chat-name]').forEach((name) => { name.textContent = conversation.title; });
+      root.querySelectorAll('[data-chat-avatar]').forEach((avatar) => {
+        avatar.textContent = threadInitial(conversation.title);
+        avatar.style.setProperty('--avatar', threadColour(conversation.thread));
+      });
+    }
+
+    function showSocialEmpty(root, kind) {
+      root.querySelector('.thread-list').replaceChildren(socialEmptyBlock(kind));
+      root.querySelector('.message-stream').replaceChildren(socialEmptyBlock(kind));
+      root.querySelector('.social-search').hidden = true;
+      root.querySelector('.composer').hidden = true;
+    }
+
+    async function bindSocialView(root, mode) {
+      const sourceName = activeSocialApp === 'Instagram' ? 'instagram' : 'messenger';
       const dateLabel = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
       root.querySelectorAll('[data-social-date]').forEach((stamp) => { stamp.textContent = dateLabel; });
 
@@ -2303,18 +3721,48 @@
         button.addEventListener('click', () => root.classList.remove('show-chat'));
       });
 
-      root.querySelectorAll('[data-open-thread]').forEach((button) => {
+      if (!archiveSource) {
+        showSocialEmpty(root, 'disconnected');
+        return;
+      }
+
+      const day = await loadDay(toLocalIso(selectedDate));
+      // The surface can be replaced while a day is being read.
+      if (!root.isConnected) return;
+
+      const conversations = ((day && day.conversations) || [])
+        .filter((conversation) => conversation.source === sourceName && conversation.messages.length)
+        .sort((first, second) => {
+          const a = first.messages[first.messages.length - 1].time;
+          const b = second.messages[second.messages.length - 1].time;
+          return b < a ? -1 : b > a ? 1 : 0;
+        });
+
+      if (!conversations.length) {
+        showSocialEmpty(root, 'quiet');
+        return;
+      }
+
+      const owner = (archiveFound[sourceName] && archiveFound[sourceName].owner) || null;
+      const total = conversations.reduce((sum, conversation) => sum + conversation.messages.length, 0);
+      root.querySelector('.social-search').textContent =
+        `${conversations.length} ${conversations.length === 1 ? 'conversation' : 'conversations'} · ${total.toLocaleString()} messages`;
+
+      const list = root.querySelector('.thread-list');
+      const buttons = conversations.map((conversation) => {
+        const button = buildThreadButton(conversation, owner);
         button.addEventListener('click', () => {
-          root.querySelectorAll('[data-open-thread]').forEach((thread) => thread.classList.remove('selected'));
+          buttons.forEach((other) => other.classList.remove('selected'));
           button.classList.add('selected');
-          root.querySelectorAll('[data-chat-name]').forEach((name) => { name.textContent = button.dataset.name; });
-          root.querySelectorAll('[data-chat-avatar]').forEach((avatar) => {
-            avatar.textContent = button.dataset.initial;
-            avatar.style.setProperty('--avatar', button.dataset.color);
-          });
+          renderConversation(root, conversation, owner, sourceName);
           if (mode === 'mobile') root.classList.add('show-chat');
         });
+        return button;
       });
+
+      list.replaceChildren(...buttons);
+      buttons[0].classList.add('selected');
+      renderConversation(root, conversations[0], owner, sourceName);
     }
 
     function renderSocialSurface() {
@@ -2358,6 +3806,7 @@
 
     desktopSocialQuery.addEventListener('change', () => {
       if (activeSocialApp === 'Maps') renderMapSurface();
+      else if (activeSocialApp === 'Memory Box') renderMemorySurface();
       else if (activeSocialApp) renderSocialSurface();
     });
 
@@ -2367,6 +3816,10 @@
         const pos = button.dataset.pos;
         if (name === 'Maps') {
           openMapApp();
+          return;
+        }
+        if (name === 'Memory Box') {
+          openMemoryApp();
           return;
         }
         if (name === 'Messenger' || name === 'Instagram') {
@@ -2402,6 +3855,7 @@
     });
 
     updateSelectedDate(selectedDate, false);
+    restoreRememberedFolder();
   </script>
 </body>
 </html>
