@@ -17,3 +17,5 @@ private/
 *.zip
 Timeline*.json
 takeout-*/
+archive/
+*-merged/

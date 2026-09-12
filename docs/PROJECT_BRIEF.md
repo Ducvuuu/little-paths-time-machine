@@ -2,7 +2,7 @@
 
 **Status date:** 2026-09-12<br>
 **Repository stage:** interactive local-first prototype<br>
-**Product stage:** visual shell plus first data-backed Maps experience
+**Product stage:** three of the four applications reading a real personal archive
 
 ## 1. What this project is
 
@@ -110,9 +110,9 @@ Motion should be quiet and characterful. Appropriate examples include a two-pixe
 
 | Application | Primary source | Intended first scope | Current status |
 |---|---|---|---|
-| Maps | Google Timeline export | One day, labelled stops, route playback | Integrated prototype; session-only Timeline import |
-| Facebook Messenger | Facebook data export | Chats and inline photos for one day | Responsive interface prototype built; importer not built |
-| Instagram | Instagram export | Direct messages only | Responsive interface prototype built; importer not built |
+| Maps | Google Timeline export | One day, labelled stops, route playback | Working on real data; imported through the Memory Box |
+| Facebook Messenger | Facebook data export | Chats and inline photos for one day | Working on real data; 560 threads, 1.27M messages |
+| Instagram | Instagram export | Direct messages only | Working on real data; 86 threads, 20,719 messages |
 | Photos | Google Photos Takeout | Day-based photo roll | Planned; API approach rejected |
 
 ### Google Photos constraint
@@ -146,7 +146,9 @@ Messenger and photo exports can be many gigabytes. Reparsing them in the browser
 
 ## 8. Facebook Messenger import notes
 
-Facebook can split one export across several ZIP files by size rather than by meaning. A conversation JSON file may be in one part while its media files are in other parts. All export parts must therefore be merged into the same relative directory tree before parsing.
+**Superseded in part.** The export Facebook actually produced is HTML, not JSON, and the parser built against it lives in [`MESSAGE_ARCHIVE.md`](MESSAGE_ARCHIVE.md). HTML proved the better input: text arrives as correct UTF-8, so the mojibake repair described below is unnecessary, and timestamps are already in the owner's local time. The notes here remain accurate for a JSON export and are kept for that case.
+
+Facebook can split one export across several ZIP files by size rather than by meaning. A conversation file may be in one part while its media files are in other parts. Parts must therefore be read as one relative directory tree. Because these exports store rather than compress their contents, the application now reads the parts in place instead of requiring them to be extracted and merged first.
 
 Expected areas include:
 
@@ -194,14 +196,17 @@ A standalone home-screen study containing:
 - placeholder app-opening transitions
 - a compact illustrated Spotify widget with playback and track controls
 - distinct Messenger and Instagram DM interface prototypes with inboxes, conversations, and inline illustrated media
-- a real Google Timeline file import held in browser memory
+- a Memory Box application that owns every import and remembers the chosen folder between visits
+- a zip reader that treats the export parts as one folder without unpacking them
+- a background worker that turns those exports into a day-indexed archive and caches it
 - single-day Maps rendering with routes, stops, distance, scrubbing, and animated playback
-- calendar markers derived from the imported Timeline dates
+- Messenger and Instagram rendering the real conversations of the selected day, with their photographs and videos
+- calendar markers derived from the archive rather than invented
 - a desktop companion layout that opens Maps and social apps beside the phone
 - a phone layout that lets Maps and social apps take over the device screen
 - reduced-motion support
 
-Messenger, Instagram, and Photos still contain placeholder content. Maps reads real location data for the current browser session.
+Maps, Messenger, and Instagram all read real archive data. Photos remains unbuilt and is the only application still illustrative.
 
 ### `assets/little-paths-icon-atlas.png`
 
@@ -237,19 +242,22 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - Connected real Timeline availability to Windback's Maps calendar markers.
 - Added local session-only Timeline import with no archive upload.
 - Created this dedicated local Git repository and formal project brief.
+- Established that the real exports arrived as HTML, and that HTML is the better input than JSON.
+- Confirmed the seven Messenger ZIP parts form one export, with media for 125 threads spread across parts.
+- Built a local normalizer producing a day-indexed archive from the HTML exports.
+- Built the Memory Box as the single owner of importing, with the folder remembered between visits.
+- Established that these exports store rather than compress, so the ZIPs can be read in place.
+- Moved archive building into the browser, in a worker, cached in IndexedDB.
+- Connected Messenger and Instagram to the archive, including inline photographs and videos.
 
 ## 12. What has not been built
 
-- No production application framework has been initialized here; the current integration remains in the standalone prototype.
-- No Facebook ZIP merger exists.
-- No Messenger parser or encoding repair exists.
-- No normalized archive schema has been finalized.
-- No directory picker or persistent file access exists.
-- No IndexedDB layer exists.
-- The Messenger interface is not connected to real archive data.
-- The Instagram DM interface is not connected to an importer or real archive data.
+- No production application framework has been initialized here; the work remains in the standalone prototype.
 - No Google Photos Takeout importer exists.
 - No tests exist for timezone bucketing, media paths, or damaged export data.
+- Reactions, replies, calls, polls, and share cards are not extracted from conversations.
+- A browser build of the full 17 GB Messenger set is unverified; only the Node path has processed it.
+- Maps still buckets dates at a fixed UTC+07:00 rather than using the per-segment offsets the Timeline file carries.
 - No mobile access or sharing system is planned at this stage.
 
 ## 13. Recommended implementation sequence
@@ -279,9 +287,11 @@ Tasks:
 - define the normalized archive schema
 - add tests for local-date conversion
 
-### Milestone 2: build the local normalization tool
+### Milestone 2: build the local normalization tool — complete
 
 Goal: turn raw exports into a stable local archive index.
+
+Done twice over: `scripts/normalize-messages.mjs` for a local run, and the same logic in a browser worker so the application can build its own archive from the ZIPs. A fixture archive for automated tests is still missing.
 
 Tasks:
 
@@ -293,9 +303,11 @@ Tasks:
 - bucket messages by local day
 - produce a small fixture archive for automated tests
 
-### Milestone 3: build Facebook Messenger first
+### Milestone 3: build Facebook Messenger first — complete
 
 Goal: prove the end-to-end archive model using the export already available to the owner.
+
+Every acceptance criterion below is met.
 
 Acceptance criteria:
 
@@ -319,9 +331,11 @@ Acceptance criteria:
 
 Implemented in the standalone prototype. Production extraction, worker-based parsing, persistent archive access, and timezone tests remain.
 
-### Milestone 5: add Instagram DMs
+### Milestone 5: add Instagram DMs — complete
 
 Goal: reuse the normalization architecture while preserving a visibly Instagram-specific interface.
+
+Instagram shares the importer and the view code, and keeps its own palette, serif wordmark, and message styling.
 
 ### Milestone 6: add Photos Takeout
 
@@ -331,17 +345,17 @@ Goal: show the selected day's photo roll using media timestamps and sidecar meta
 
 ### Visual
 
-1. Should the decorative sixteen apps remain, or should the home screen become calmer with fewer icons?
+1. Should the decorative apps remain, or should the home screen become calmer with fewer icons? One slot has since become the Memory Box, leaving fifteen decorative.
 2. Should every icon be commissioned or generated as an individual asset rather than using an atlas?
 3. How closely should widgets follow the reference screenshot versus serving the time-machine concept?
 4. Should the day-summary card remain, or should the lower widget become a music player again?
 
 ### Messenger scope
 
-1. Is version one limited to `inbox/`, or does it include archived threads, requests, filtered threads, and encrypted-cutover folders?
-2. Should duplicated export folders for the same participant be merged?
-3. Are group chats in scope for the first release?
-4. Should version one support photos only, with placeholders for stickers, GIFs, video, audio, and files?
+1. ~~Is version one limited to `inbox/`?~~ **Resolved:** every thread folder is read, including archived, filtered, requests, and encrypted-cutover.
+2. Should duplicated export folders for the same participant be merged? Still open; they are currently kept separate.
+3. ~~Are group chats in scope?~~ **Resolved:** yes. Senders are named above their messages in group threads.
+4. ~~Photos only?~~ **Resolved:** photos, GIFs, video, audio, and files are all carried. Reactions, replies, and share cards are not.
 
 ### Technical ownership
 
@@ -381,7 +395,7 @@ Goal: show the selected day's photo roll using media timestamps and sidecar meta
 **Risk:** messages, locations, and photos are unusually sensitive personal data.<br>
 **Mitigation:** keep processing local, ignore archive folders in Git, make network behavior auditable, and avoid telemetry that includes archive content.
 
-## 16. Definition of the first meaningful release
+## 16. Definition of the first meaningful release — reached
 
 The first meaningful release is not the completed four-app phone. It is a private end-to-end Messenger day viewer:
 
@@ -393,4 +407,6 @@ The first meaningful release is not the completed four-app phone. It is a privat
 6. Closing and reopening the local app does not require reparsing the full export.
 7. No archive content leaves the device.
 
-Once this works reliably, the same archive foundation can support Instagram DMs and Photos Takeout alongside the integrated Maps experience.
+All seven hold, with one caveat worth keeping in view: step 6 is proven for a prebuilt archive and for the Instagram export read straight from its ZIP, but a full browser build of the 17 GB Messenger set has not yet been run.
+
+That foundation now also carries Instagram DMs and Maps. Photos Takeout is the remaining source.
