@@ -1,8 +1,8 @@
 # Project brief: Little Paths Time Machine
 
 **Status date:** 2026-09-12<br>
-**Repository stage:** standalone visual prototype<br>
-**Product stage:** concept validated at a high level; visual language and data architecture under development
+**Repository stage:** interactive local-first prototype<br>
+**Product stage:** visual shell plus first data-backed Maps experience
 
 ## 1. What this project is
 
@@ -110,7 +110,7 @@ Motion should be quiet and characterful. Appropriate examples include a two-pixe
 
 | Application | Primary source | Intended first scope | Current status |
 |---|---|---|---|
-| Maps | Google Timeline export | One day, labelled stops, route playback | Existing Little Paths app is available separately; not integrated here |
+| Maps | Google Timeline export | One day, labelled stops, route playback | Integrated prototype; session-only Timeline import |
 | Facebook Messenger | Facebook data export | Chats and inline photos for one day | Responsive interface prototype built; importer not built |
 | Instagram | Instagram export | Direct messages only | Responsive interface prototype built; importer not built |
 | Photos | Google Photos Takeout | Day-based photo roll | Planned; API approach rejected |
@@ -171,16 +171,11 @@ Important parser behavior:
 
 ## 9. Relationship to the existing Little Paths app
 
-An existing deployed application named Little Paths already visualizes a Google Timeline export on a softly styled MapLibre map. It supports day and date-range playback, labelled stops, a fading route trail, day-based camera framing, playback-duration presets, and a clean control-free view.
+An existing deployed application named Little Paths visualizes a Google Timeline export on a softly styled MapLibre map. It supports day and date-range playback, labelled stops, a fading route trail, day-based camera framing, playback-duration presets, and a clean control-free view.
 
-That application is the intended foundation for the Maps experience. This new repository currently contains only the time-machine phone shell. The existing map code has not yet been copied or integrated.
+Its focused single-day engine is now integrated into this repository's standalone prototype. Maps consumes the Windback date, opens beside the phone on desktop and inside the phone on smaller screens, and turns actual imported Timeline dates into calendar markers.
 
-The eventual implementation can either:
-
-- move the phone shell into the existing Next.js application as a new root experience, or
-- develop this repository into the new application and port the map into it.
-
-That repository strategy is still open.
+This repository now owns the integrated product prototype. The next production step is to migrate the combined shell and focused map engine to typed Next.js components while retaining the original Little Paths repository as the fuller standalone map experiment.
 
 ## 10. What exists in this repository now
 
@@ -199,11 +194,14 @@ A standalone home-screen study containing:
 - placeholder app-opening transitions
 - a compact illustrated Spotify widget with playback and track controls
 - distinct Messenger and Instagram DM interface prototypes with inboxes, conversations, and inline illustrated media
-- a desktop companion layout that opens social apps beside the phone
-- a phone layout that lets social apps take over the device screen
+- a real Google Timeline file import held in browser memory
+- single-day Maps rendering with routes, stops, distance, scrubbing, and animated playback
+- calendar markers derived from the imported Timeline dates
+- a desktop companion layout that opens Maps and social apps beside the phone
+- a phone layout that lets Maps and social apps take over the device screen
 - reduced-motion support
 
-The app views currently contain placeholder copy. They do not load real conversations, locations, or photos.
+Messenger, Instagram, and Photos still contain placeholder content. Maps reads real location data for the current browser session.
 
 ### `assets/little-paths-icon-atlas.png`
 
@@ -235,12 +233,14 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - Replaced the lower day-summary card with a recognizable illustrated Spotify player.
 - Added distinct Messenger and Instagram direct-message views.
 - Added responsive behavior that opens social apps beside the phone on large screens and inside the phone on small screens.
+- Integrated the focused single-day Little Paths map engine with responsive desktop and phone presentations.
+- Connected real Timeline availability to Windback's Maps calendar markers.
+- Added local session-only Timeline import with no archive upload.
 - Created this dedicated local Git repository and formal project brief.
 
 ## 12. What has not been built
 
-- No production application framework has been initialized here.
-- No existing Little Paths map code has been integrated.
+- No production application framework has been initialized here; the current integration remains in the standalone prototype.
 - No Facebook ZIP merger exists.
 - No Messenger parser or encoding repair exists.
 - No normalized archive schema has been finalized.
@@ -307,7 +307,7 @@ Acceptance criteria:
 - handle missing or unsupported media gracefully
 - never upload archive content
 
-### Milestone 4: integrate Maps
+### Milestone 4: integrate Maps — prototype complete
 
 Goal: bring the existing Little Paths day playback into the same selected-date model.
 
@@ -316,6 +316,8 @@ Acceptance criteria:
 - Maps opens directly to the globally selected date
 - returning home preserves playback state where reasonable
 - route animation and labelled stops remain intact
+
+Implemented in the standalone prototype. Production extraction, worker-based parsing, persistent archive access, and timezone tests remain.
 
 ### Milestone 5: add Instagram DMs
 
@@ -391,4 +393,4 @@ The first meaningful release is not the completed four-app phone. It is a privat
 6. Closing and reopening the local app does not require reparsing the full export.
 7. No archive content leaves the device.
 
-Once this works reliably, Maps can be integrated and the same foundation can support Instagram DMs and Photos Takeout.
+Once this works reliably, the same archive foundation can support Instagram DMs and Photos Takeout alongside the integrated Maps experience.

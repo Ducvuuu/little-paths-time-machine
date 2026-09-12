@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Little Paths Home</title>
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css">
   <style>
     :root {
       --page: #ebe8e3;
@@ -863,6 +864,202 @@
     .mobile-social .memory-photo { width: 205px; }
     .mobile-social .social-brand-head { padding-top: 22px; }
 
+    .maps-app {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      overflow: hidden;
+      background: #f7f2e8;
+      color: #34394c;
+    }
+
+    .maps-head {
+      position: relative;
+      z-index: 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 68px;
+      padding: 12px 16px;
+      background: #171b2d;
+      color: var(--cream);
+    }
+
+    .maps-title-group { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .maps-close {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50% 44% 48% 45%;
+      background: #2a3047;
+      color: var(--cream);
+      cursor: pointer;
+      font-size: 23px;
+      line-height: 1;
+    }
+    .maps-close:hover { background: #353c56; transform: rotate(-4deg); }
+    .maps-title { display: block; font-size: 14px; font-weight: 850; letter-spacing: .02em; }
+    .maps-date { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; }
+    .maps-head-actions { display: flex; align-items: center; gap: 8px; }
+    .maps-change {
+      position: relative;
+      display: grid;
+      width: 30px;
+      height: 30px;
+      overflow: hidden;
+      place-items: center;
+      border-radius: 10px 12px 9px 11px;
+      background: #292f46;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 900;
+    }
+    .maps-change:hover { color: var(--cream); transform: rotate(-5deg); }
+    .maps-change input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .maps-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: 12px 15px 11px 14px;
+      background: var(--sage);
+      color: #24303b;
+      transform: rotate(2deg);
+    }
+    .maps-mark svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    .maps-canvas-wrap { position: relative; min-height: 0; overflow: hidden; background: #e7ebe4; }
+    .maps-canvas { position: absolute; inset: 0; }
+    .maps-app .maplibregl-canvas { outline: none; }
+    .maps-app .maplibregl-ctrl-bottom-left,
+    .maps-app .maplibregl-ctrl-bottom-right { display: none; }
+
+    .maps-empty {
+      position: absolute;
+      z-index: 3;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 74% 23%, rgba(241,199,101,.32) 0 4px, transparent 5px),
+        radial-gradient(circle at 25% 72%, rgba(130,168,197,.28) 0 3px, transparent 4px),
+        #f7f2e8;
+      text-align: center;
+    }
+    .maps-empty[hidden] { display: none; }
+    .maps-empty-art {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 17px;
+      border-radius: 48% 52% 46% 54%;
+      background: #dce8e2;
+    }
+    .maps-empty-art::before {
+      content: "";
+      position: absolute;
+      inset: 18px 26px 20px;
+      border: 4px solid var(--coral);
+      border-top-color: transparent;
+      border-radius: 50%;
+      transform: rotate(-20deg);
+    }
+    .maps-empty-art::after {
+      content: "✦";
+      position: absolute;
+      right: 15px;
+      top: 8px;
+      color: var(--yellow);
+      font-size: 24px;
+      transform: rotate(8deg);
+    }
+    .maps-empty h2 { margin: 0; color: #34394c; font-size: 19px; line-height: 1.15; }
+    .maps-empty p { max-width: 320px; margin: 8px auto 15px; color: #737888; font-size: 11px; line-height: 1.55; }
+    .maps-import {
+      position: relative;
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 17px;
+      overflow: hidden;
+      border-radius: 14px 17px 13px 16px;
+      background: var(--coral);
+      color: #282c3e;
+      cursor: pointer;
+      font-size: 10px;
+      font-weight: 850;
+    }
+    .maps-import:hover { transform: translateY(-1px) rotate(-.5deg); }
+    .maps-import input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .maps-file-status { display: block; margin-top: 10px; color: #8b8f9c; font-size: 8px; }
+
+    .maps-playback {
+      position: relative;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 82px;
+      padding: 12px 16px 14px;
+      background: #171b2d;
+      color: var(--cream);
+    }
+    .maps-play {
+      width: 43px;
+      height: 43px;
+      border: 0;
+      border-radius: 48% 52% 45% 55%;
+      background: var(--coral);
+      color: #25293b;
+      cursor: pointer;
+      font-weight: 900;
+      transition: transform 150ms ease;
+    }
+    .maps-play:hover:not(:disabled) { transform: rotate(-4deg) scale(1.04); }
+    .maps-play:active:not(:disabled) { transform: scale(.9); }
+    .maps-play:disabled { opacity: .35; cursor: default; }
+    .maps-scrubber { min-width: 0; }
+    .maps-time-row { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--muted); font-size: 8px; }
+    .maps-current-time { color: var(--yellow); font-weight: 800; }
+    .maps-range { width: 100%; height: 4px; accent-color: var(--coral); cursor: pointer; }
+    .maps-range:disabled { opacity: .32; cursor: default; }
+    .maps-distance { min-width: 48px; color: var(--muted); font-size: 8px; line-height: 1.3; text-align: right; }
+    .maps-distance strong { display: block; color: var(--cream); font-size: 11px; }
+
+    .place-label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      color: #4d524e;
+      font-size: 9px;
+      font-weight: 750;
+      filter: drop-shadow(0 1px 0 #f7f2e8) drop-shadow(0 -1px 0 #f7f2e8);
+    }
+    .place-label i { width: 7px; height: 7px; border: 2px solid #f7f2e8; border-radius: 50%; background: var(--yellow); }
+    .map-playhead {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(239,127,112,.25);
+      pointer-events: none;
+    }
+    .map-playhead svg { width: 27px; height: 27px; fill: #ef7f70; stroke: #f7f2e8; stroke-width: 1.2; transform: rotate(-12deg); filter: drop-shadow(0 1px 1px rgba(52,57,76,.22)); }
+
+    .mobile-social .maps-head { padding-top: 24px; }
+    .mobile-social .maps-playback { grid-template-columns: auto minmax(0, 1fr); gap: 10px; padding-inline: 13px; }
+    .mobile-social .maps-distance { display: none; }
+    .mobile-social .maps-empty { padding: 20px; }
+    .mobile-social .maps-empty h2 { font-size: 17px; }
+
     @media (min-width: 900px) {
       .stage.companion-open {
         grid-template-columns: auto minmax(470px, 720px);
@@ -1091,6 +1288,52 @@
     </section>
   </main>
 
+  <template id="mapsTemplate">
+    <div class="maps-app">
+      <header class="maps-head">
+        <div class="maps-title-group">
+          <button class="maps-close" type="button" data-close-maps aria-label="Close Maps">‹</button>
+          <div>
+            <span class="maps-title">Little Paths</span>
+            <span class="maps-date" data-maps-date>Friday, 11 September 2026</span>
+          </div>
+        </div>
+        <div class="maps-head-actions">
+          <label class="maps-change" aria-label="Choose another Timeline file" title="Choose another Timeline file">
+            <input type="file" accept=".json,application/json" data-timeline-input>
+            <span aria-hidden="true">↻</span>
+          </label>
+          <span class="maps-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M7 6.5 13 4l6 3 6-2.5v21L19 27l-6-3-6 2.5z"/><path d="M13 4v20m6-17v20"/><circle cx="23" cy="9" r="2.4" fill="#ef7f70" stroke="none"/></svg>
+          </span>
+        </div>
+      </header>
+      <div class="maps-canvas-wrap">
+        <div class="maps-canvas" data-map-canvas aria-label="Animated map of the selected day"></div>
+        <div class="maps-empty" data-map-empty>
+          <div>
+            <div class="maps-empty-art" aria-hidden="true"></div>
+            <h2 data-map-empty-title>Wake up your paths</h2>
+            <p data-map-empty-copy>Choose your Google Timeline file. It stays on this device and is read only in your browser.</p>
+            <label class="maps-import">
+              <input type="file" accept=".json,application/json" data-timeline-input>
+              <span data-import-label>Choose Timeline.json</span>
+            </label>
+            <span class="maps-file-status" data-map-status>No location history loaded</span>
+          </div>
+        </div>
+      </div>
+      <footer class="maps-playback">
+        <button class="maps-play" type="button" data-map-play disabled aria-label="Play this day">▶</button>
+        <div class="maps-scrubber">
+          <div class="maps-time-row"><span class="maps-current-time" data-map-current-time>—</span><span data-map-end-time>—</span></div>
+          <input class="maps-range" type="range" min="0" max="1" step="0.001" value="0" data-map-range disabled aria-label="Route playback position">
+        </div>
+        <div class="maps-distance"><strong data-map-distance>—</strong><span>travelled</span></div>
+      </footer>
+    </div>
+  </template>
+
   <template id="messengerTemplate">
     <div class="social-app messenger-app">
       <aside class="social-sidebar">
@@ -1192,6 +1435,7 @@
 
   <input class="hidden-date" id="datePicker" type="date" value="2026-09-11" aria-label="Choose a day">
 
+  <script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
   <script>
     const datePicker = document.getElementById('datePicker');
     const windbackHomeDate = document.getElementById('windbackHomeDate');
@@ -1223,6 +1467,7 @@
     const phoneSocialContent = document.getElementById('phoneSocialContent');
     const desktopAppPanel = document.getElementById('desktopAppPanel');
     const desktopSocialContent = document.getElementById('desktopSocialContent');
+    const mapsTemplate = document.getElementById('mapsTemplate');
     const messengerTemplate = document.getElementById('messengerTemplate');
     const instagramTemplate = document.getElementById('instagramTemplate');
     const spotifyCard = document.getElementById('spotifyCard');
@@ -1245,7 +1490,14 @@
     let currentTrack = 0;
     let spotifyIsPlaying = false;
     let activeSocialApp = null;
+    let activeMapController = null;
+    let timelineArchive = null;
+    let timelineFileName = '';
+    let timelineDates = new Set();
     const desktopSocialQuery = window.matchMedia('(min-width: 900px)');
+    const MAP_MAX_POINTS = 6000;
+    const MAP_TRAIL_FRACTION = 0.18;
+    const MAP_TRAIL_BANDS = 24;
 
     function parseLocalDate(value) {
       const [year, month, day] = value.split('-').map(Number);
@@ -1261,6 +1513,541 @@
 
     function dayNumber(date) {
       return Math.round(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / oneDay);
+    }
+
+    function parseCoordinate(value) {
+      const text = typeof value === 'string'
+        ? value
+        : value && typeof value === 'object' && 'latLng' in value
+          ? String(value.latLng || '')
+          : '';
+      const values = text.replace('geo:', '').match(/-?\d+(?:\.\d+)?/g);
+      if (!values || values.length < 2) return null;
+      const latitude = Number(values[0]);
+      const longitude = Number(values[1]);
+      return Number.isFinite(latitude) && Number.isFinite(longitude) ? [longitude, latitude] : null;
+    }
+
+    function mapDayKey(time) {
+      return new Date(time + 7 * 3600000).toISOString().slice(0, 10);
+    }
+
+    function distanceMetres(first, second) {
+      const latitude = (first[1] + second[1]) / 2 * Math.PI / 180;
+      return Math.hypot(
+        (first[0] - second[0]) * 111320 * Math.cos(latitude),
+        (first[1] - second[1]) * 111320
+      );
+    }
+
+    function routeBearing(first, second) {
+      const latitudeOne = first[1] * Math.PI / 180;
+      const latitudeTwo = second[1] * Math.PI / 180;
+      const longitude = (second[0] - first[0]) * Math.PI / 180;
+      return Math.atan2(
+        Math.sin(longitude) * Math.cos(latitudeTwo),
+        Math.cos(latitudeOne) * Math.sin(latitudeTwo)
+          - Math.sin(latitudeOne) * Math.cos(latitudeTwo) * Math.cos(longitude)
+      ) * 180 / Math.PI;
+    }
+
+    function clockLabel(time) {
+      return new Date(time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+    }
+
+    function thinRoute(points, minimumMetres) {
+      const result = [];
+      points.forEach((point) => {
+        if (!result.length || distanceMetres(result[result.length - 1].coord, point.coord) > minimumMetres) result.push(point);
+      });
+      if (points.length > 1 && result.length === 1) result.push(points[points.length - 1]);
+      return result;
+    }
+
+    function buildTimelineDateIndex(data) {
+      const segments = Array.isArray(data) ? data : data && Array.isArray(data.semanticSegments) ? data.semanticSegments : [];
+      const dates = new Set();
+      segments.forEach((segment) => {
+        (segment && segment.timelinePath || []).forEach((path) => {
+          const time = new Date(path && path.time).getTime();
+          if (Number.isFinite(time)) dates.add(mapDayKey(time));
+        });
+        const activity = segment && segment.activity;
+        const activityStart = parseCoordinate(activity && activity.start);
+        const activityEnd = parseCoordinate(activity && activity.end);
+        const distance = Number(activity && activity.distanceMeters || 0);
+        if (activityStart && activityEnd && distance >= 40) {
+          const start = new Date(segment && segment.startTime).getTime();
+          const end = new Date(segment && segment.endTime).getTime();
+          if (Number.isFinite(start)) dates.add(mapDayKey(start));
+          if (Number.isFinite(end)) dates.add(mapDayKey(end));
+        }
+      });
+      return dates;
+    }
+
+    function buildDayStory(data, date) {
+      const startMs = new Date(`${date}T00:00:00+07:00`).getTime();
+      const endMs = new Date(`${date}T23:59:59+07:00`).getTime();
+      const source = Array.isArray(data) ? data : data && Array.isArray(data.semanticSegments) ? data.semanticSegments : [];
+      const raw = [];
+      const activities = [];
+      const visits = [];
+
+      source.forEach((item) => {
+        const start = new Date(item && item.startTime).getTime();
+        const end = new Date(item && item.endTime).getTime();
+        if (!Number.isFinite(start) || !Number.isFinite(end) || end < startMs || start > endMs) return;
+
+        (item.timelinePath || []).forEach((path) => {
+          const coord = parseCoordinate(path && path.point);
+          const time = new Date(path && path.time).getTime();
+          if (coord && Number.isFinite(time) && time >= startMs && time <= endMs) {
+            raw.push({ coord, time, mode: 'UNKNOWN', segment: 0 });
+          }
+        });
+
+        if (item.activity) {
+          const activity = item.activity;
+          const from = parseCoordinate(activity.start);
+          const to = parseCoordinate(activity.end);
+          const distance = Number(activity.distanceMeters || 0);
+          const mode = String(activity.topCandidate && activity.topCandidate.type || 'UNKNOWN');
+          if (from && to && distance >= 40) activities.push({ start, end, from, to, distance, mode });
+        }
+
+        const candidate = item.visit && item.visit.topCandidate;
+        const coord = parseCoordinate(candidate && candidate.placeLocation);
+        if (coord) {
+          visits.push({
+            coord,
+            start: Math.max(start, startMs),
+            end: Math.min(end, endMs),
+            semantic: String(candidate && candidate.semanticType || 'UNKNOWN')
+          });
+        }
+      });
+
+      raw.sort((first, second) => first.time - second.time);
+      const segments = [];
+      let distanceKm = 0;
+
+      activities.sort((first, second) => first.start - second.start).forEach((activity) => {
+        const lower = activity.start - 60000;
+        const upper = activity.end + 60000;
+        const inner = raw.filter((point) => point.time >= lower && point.time <= upper)
+          .map((point) => ({ ...point, mode: activity.mode }));
+        const points = [
+          { coord: activity.from, time: activity.start, mode: activity.mode, segment: 0 },
+          ...inner,
+          { coord: activity.to, time: activity.end, mode: activity.mode, segment: 0 }
+        ].sort((first, second) => first.time - second.time);
+        const clean = thinRoute(points, 8);
+        if (clean.length > 1) {
+          segments.push({ points: clean, mode: activity.mode });
+          distanceKm += activity.distance / 1000;
+        }
+      });
+
+      if (!segments.length && raw.length > 1) {
+        const clean = [];
+        raw.forEach((point) => {
+          const gap = clean.length ? distanceMetres(clean[clean.length - 1].coord, point.coord) : 999;
+          if (gap > 20 && gap < 30000) clean.push(point);
+        });
+        if (clean.length > 1) segments.push({ points: clean, mode: 'UNKNOWN' });
+      }
+
+      let total = segments.reduce((sum, segment) => sum + segment.points.length, 0);
+      let minimumGap = 8;
+      while (total > MAP_MAX_POINTS && minimumGap < 4000) {
+        minimumGap *= 2.4;
+        segments.forEach((segment) => { segment.points = thinRoute(segment.points, minimumGap); });
+        total = segments.reduce((sum, segment) => sum + segment.points.length, 0);
+      }
+
+      const route = segments.flatMap((segment, segmentIndex) => segment.points.map((point) => ({
+        ...point,
+        segment: segmentIndex
+      }))).sort((first, second) => first.time - second.time);
+
+      if (!distanceKm) {
+        segments.forEach((segment) => {
+          for (let index = 1; index < segment.points.length; index += 1) {
+            distanceKm += distanceMetres(segment.points[index - 1].coord, segment.points[index].coord) / 1000;
+          }
+        });
+      }
+
+      const clusters = [];
+      visits.sort((first, second) => first.start - second.start).forEach((visit) => {
+        const match = clusters.find((place) => distanceMetres(place.coord, visit.coord) < 210);
+        if (match) {
+          match.end = Math.max(match.end, visit.end);
+          if (visit.semantic === 'INFERRED_HOME') match.semantic = visit.semantic;
+        } else clusters.push({ ...visit });
+      });
+
+      let stop = 1;
+      const places = clusters.map((place) => {
+        const home = place.semantic === 'INFERRED_HOME';
+        return { coord: place.coord, label: home ? 'home' : `stop ${stop++}`, time: home ? place.end : place.start };
+      });
+
+      return { date, route, segments, places, distanceKm };
+    }
+
+    function routeFeatures(segments) {
+      return {
+        type: 'FeatureCollection',
+        features: segments.filter((segment) => segment.points.length > 1).map((segment) => ({
+          type: 'Feature',
+          properties: { mode: segment.mode },
+          geometry: { type: 'LineString', coordinates: segment.points.map((point) => point.coord) }
+        }))
+      };
+    }
+
+    function activeRouteState(story, progress) {
+      const route = story.route;
+      const empty = { type: 'FeatureCollection', features: [] };
+      if (!route.length) return { features: empty, head: null, bearing: 0, index: 0 };
+      const exact = Math.min(route.length - 1, progress * (route.length - 1));
+      const index = Math.floor(exact);
+      const fraction = exact - index;
+      const span = Math.max(4, Math.round(route.length * MAP_TRAIL_FRACTION));
+      const tail = Math.max(0, index - span + 1);
+      const reach = Math.max(1, index - tail);
+      const nodes = [];
+      for (let cursor = tail; cursor <= index; cursor += 1) {
+        nodes.push({
+          coord: route[cursor].coord,
+          segment: route[cursor].segment,
+          band: Math.min(MAP_TRAIL_BANDS - 1, Math.floor((cursor - tail) / reach * MAP_TRAIL_BANDS))
+        });
+      }
+
+      let head = route[index].coord;
+      let bearing = 0;
+      if (index < route.length - 1 && route[index].segment === route[index + 1].segment) {
+        const first = route[index];
+        const second = route[index + 1];
+        head = [
+          first.coord[0] + (second.coord[0] - first.coord[0]) * fraction,
+          first.coord[1] + (second.coord[1] - first.coord[1]) * fraction
+        ];
+        bearing = routeBearing(first.coord, second.coord);
+        nodes.push({ coord: head, segment: first.segment, band: MAP_TRAIL_BANDS - 1 });
+      } else if (index > 0) bearing = routeBearing(route[index - 1].coord, route[index].coord);
+
+      const features = [];
+      let current = [];
+      let band = 0;
+      let segment = 0;
+      const flush = () => {
+        if (current.length > 1) {
+          features.push({
+            type: 'Feature',
+            properties: { t: (band + 0.5) / MAP_TRAIL_BANDS },
+            geometry: { type: 'LineString', coordinates: current }
+          });
+        }
+      };
+
+      nodes.forEach((node) => {
+        if (!current.length) {
+          current = [node.coord]; band = node.band; segment = node.segment; return;
+        }
+        if (node.segment !== segment || node.band !== band) {
+          if (node.segment === segment) current.push(node.coord);
+          flush();
+          current = [node.coord]; band = node.band; segment = node.segment; return;
+        }
+        current.push(node.coord);
+      });
+      flush();
+      return { features: { type: 'FeatureCollection', features }, head, bearing, index };
+    }
+
+    function softenMap(map) {
+      (map.getStyle().layers || []).forEach((layer) => {
+        const id = String(layer.id).toLowerCase();
+        const source = String(layer['source-layer'] || '').toLowerCase();
+        const name = `${id} ${source}`;
+        try {
+          if (layer.type === 'background') map.setPaintProperty(layer.id, 'background-color', '#f7f2e8');
+          else if (layer.type === 'symbol') map.setLayoutProperty(layer.id, 'visibility', 'none');
+          else if (layer.type === 'fill') {
+            if (/water/.test(name)) {
+              map.setPaintProperty(layer.id, 'fill-color', '#dce8e2');
+              map.setPaintProperty(layer.id, 'fill-opacity', 0.72);
+            } else if (/park|grass|wood|landcover|landuse/.test(name)) {
+              map.setPaintProperty(layer.id, 'fill-color', '#bfd0b3');
+              map.setPaintProperty(layer.id, 'fill-opacity', 0.62);
+            } else {
+              map.setPaintProperty(layer.id, 'fill-color', '#eee9df');
+              map.setPaintProperty(layer.id, 'fill-opacity', 0.3);
+            }
+          } else if (layer.type === 'line') {
+            map.setPaintProperty(layer.id, 'line-color', /water/.test(name) ? '#bdd1cb' : '#c5c0b7');
+            map.setPaintProperty(layer.id, 'line-opacity', /water/.test(name) ? 0.58 : 0.28);
+          }
+        } catch (error) {
+          // Different tile styles expose different paint properties; unsupported ones are harmless.
+        }
+      });
+    }
+
+    async function importTimelineFile(file, controller) {
+      if (!file) return;
+      controller.showEmpty('Reading your Timeline…', 'Large exports can take a moment. Everything stays in this browser.', file.name);
+      try {
+        const data = JSON.parse(await file.text());
+        const dates = buildTimelineDateIndex(data);
+        if (!dates.size) throw new Error('No dated Timeline entries were found in this file.');
+        timelineArchive = data;
+        timelineDates = dates;
+        timelineFileName = file.name;
+        const currentIso = toLocalIso(selectedDate);
+        if (!timelineDates.has(currentIso)) {
+          const newest = [...timelineDates].sort().reverse()[0];
+          updateSelectedDate(parseLocalDate(newest));
+        } else {
+          renderCalendar();
+          controller.setDate(selectedDate);
+        }
+      } catch (error) {
+        controller.showEmpty(
+          'This path could not wake up',
+          error instanceof Error ? error.message : 'The Timeline file could not be read.',
+          file.name
+        );
+      }
+    }
+
+    class MapController {
+      constructor(root) {
+        this.root = root;
+        this.canvas = root.querySelector('[data-map-canvas]');
+        this.empty = root.querySelector('[data-map-empty]');
+        this.emptyTitle = root.querySelector('[data-map-empty-title]');
+        this.emptyCopy = root.querySelector('[data-map-empty-copy]');
+        this.status = root.querySelector('[data-map-status]');
+        this.dateLabel = root.querySelector('[data-maps-date]');
+        this.playButton = root.querySelector('[data-map-play]');
+        this.range = root.querySelector('[data-map-range]');
+        this.currentTime = root.querySelector('[data-map-current-time]');
+        this.endTime = root.querySelector('[data-map-end-time]');
+        this.distance = root.querySelector('[data-map-distance]');
+        this.map = null;
+        this.mapReady = false;
+        this.story = { route: [], segments: [], places: [], distanceKm: 0 };
+        this.markers = [];
+        this.playhead = null;
+        this.progress = 0;
+        this.frame = null;
+        this.playing = false;
+        this.startedAt = 0;
+        this.startProgress = 0;
+        this.resizeObserver = null;
+
+        root.querySelectorAll('[data-close-maps]').forEach((button) => button.addEventListener('click', closeSocialApp));
+        root.querySelectorAll('[data-timeline-input]').forEach((input) => {
+          input.addEventListener('change', (event) => importTimelineFile(event.target.files && event.target.files[0], this));
+        });
+        this.playButton.addEventListener('click', () => this.togglePlay());
+        this.range.addEventListener('input', () => this.scrub(Number(this.range.value)));
+        this.setDate(selectedDate);
+      }
+
+      setDate(date) {
+        const dateText = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        this.dateLabel.textContent = dateText;
+        this.stop();
+        this.progress = 0;
+        this.range.value = '0';
+
+        if (!timelineArchive) {
+          this.story = { route: [], segments: [], places: [], distanceKm: 0 };
+          this.showEmpty('Wake up your paths', 'Choose your Google Timeline file. It stays on this device and is read only in your browser.', 'No location history loaded');
+          this.updateControls();
+          return;
+        }
+
+        this.story = buildDayStory(timelineArchive, toLocalIso(date));
+        if (!this.story.route.length) {
+          this.showEmpty('No paths recorded this day', 'Choose another date in Windback. Blue calendar dots mark days with Timeline memories.', timelineFileName);
+          this.clearMapStory();
+          this.updateControls();
+          return;
+        }
+
+        this.empty.hidden = true;
+        this.updateControls();
+        if (this.mapReady) this.applyStory();
+        else this.initializeMap();
+      }
+
+      showEmpty(title, copy, status) {
+        this.empty.hidden = false;
+        this.emptyTitle.textContent = title;
+        this.emptyCopy.textContent = copy;
+        this.status.textContent = status || timelineFileName || 'No location history loaded';
+      }
+
+      updateControls() {
+        const ready = Boolean(this.story.route.length);
+        this.playButton.disabled = !ready;
+        this.range.disabled = !ready;
+        this.playButton.textContent = this.playing ? 'Ⅱ' : this.progress >= 0.999 ? '↺' : '▶';
+        this.playButton.setAttribute('aria-label', this.playing ? 'Pause this day' : this.progress >= 0.999 ? 'Replay this day' : 'Play this day');
+        if (!ready) {
+          this.currentTime.textContent = '—';
+          this.endTime.textContent = '—';
+          this.distance.textContent = '—';
+          return;
+        }
+        this.currentTime.textContent = clockLabel(this.story.route[0].time);
+        this.endTime.textContent = clockLabel(this.story.route[this.story.route.length - 1].time);
+        this.distance.textContent = `${this.story.distanceKm < 10 ? this.story.distanceKm.toFixed(1) : Math.round(this.story.distanceKm)} km`;
+      }
+
+      initializeMap() {
+        if (this.map || !this.story.route.length) return;
+        if (!window.maplibregl) {
+          this.showEmpty('The map could not open', 'MapLibre did not load. Check your connection and reopen Maps.', timelineFileName);
+          return;
+        }
+        requestAnimationFrame(() => {
+          if (!this.root.isConnected || this.map) return;
+          this.map = new window.maplibregl.Map({
+            container: this.canvas,
+            style: 'https://tiles.openfreemap.org/styles/positron',
+            center: this.story.route[0].coord,
+            zoom: 11,
+            attributionControl: false
+          });
+          this.map.on('load', () => {
+            if (!this.map) return;
+            softenMap(this.map);
+            const empty = { type: 'FeatureCollection', features: [] };
+            this.map.addSource('full-path', { type: 'geojson', data: empty });
+            this.map.addLayer({ id: 'full-halo', type: 'line', source: 'full-path', paint: { 'line-color': '#f7f2e8', 'line-width': 9, 'line-opacity': 0.75 }, layout: { 'line-cap': 'round', 'line-join': 'round' } });
+            this.map.addLayer({ id: 'full-line', type: 'line', source: 'full-path', paint: { 'line-color': '#e87959', 'line-width': 4.5, 'line-opacity': 0.46 }, layout: { 'line-cap': 'round', 'line-join': 'round' } });
+            this.map.addLayer({ id: 'walk-line', type: 'line', source: 'full-path', filter: ['==', ['get', 'mode'], 'WALKING'], paint: { 'line-color': '#718b68', 'line-width': 3.2, 'line-dasharray': [0.5, 1.8], 'line-opacity': 0.92 }, layout: { 'line-cap': 'round', 'line-join': 'round' } });
+            this.map.addSource('active-path', { type: 'geojson', data: empty });
+            this.map.addLayer({ id: 'active-halo', type: 'line', source: 'active-path', paint: { 'line-color': ['interpolate', ['linear'], ['get', 't'], 0, 'rgba(247,242,232,0)', 1, 'rgba(247,242,232,.9)'], 'line-width': ['interpolate', ['linear'], ['get', 't'], 0, 2, 1, 9] }, layout: { 'line-cap': 'round', 'line-join': 'round' } });
+            this.map.addLayer({ id: 'active-line', type: 'line', source: 'active-path', paint: { 'line-color': ['interpolate', ['linear'], ['get', 't'], 0, 'rgba(232,121,89,0)', 0.4, 'rgba(232,121,89,.58)', 1, 'rgba(232,121,89,1)'], 'line-width': ['interpolate', ['linear'], ['get', 't'], 0, 1.2, 1, 5.5] }, layout: { 'line-cap': 'round', 'line-join': 'round' } });
+            this.mapReady = true;
+            this.applyStory();
+          });
+          this.resizeObserver = new ResizeObserver(() => { if (this.map) this.map.resize(); });
+          this.resizeObserver.observe(this.canvas);
+        });
+      }
+
+      applyStory() {
+        if (!this.mapReady || !this.map || !this.story.route.length) return;
+        this.map.getSource('full-path').setData(routeFeatures(this.story.segments));
+        this.markers.forEach((marker) => marker.remove());
+        this.markers = [];
+        this.story.places.forEach((place) => {
+          const element = document.createElement('div');
+          element.className = 'place-label';
+          const dot = document.createElement('i');
+          const text = document.createElement('span');
+          text.textContent = `${place.label} · ${clockLabel(place.time)}`;
+          element.append(dot, text);
+          this.markers.push(new window.maplibregl.Marker({ element, anchor: 'left' }).setLngLat(place.coord).addTo(this.map));
+        });
+
+        if (!this.playhead) {
+          const element = document.createElement('div');
+          element.className = 'map-playhead';
+          element.innerHTML = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="m4 15 23-10-8 22-4-8-8-4 9-3-6 5 5 2 4 8 8-20-21 9z"/></svg>';
+          this.playhead = new window.maplibregl.Marker({ element, rotationAlignment: 'map' }).setLngLat(this.story.route[0].coord).addTo(this.map);
+        }
+
+        const bounds = new window.maplibregl.LngLatBounds();
+        this.story.route.forEach((point) => bounds.extend(point.coord));
+        this.map.fitBounds(bounds, { padding: 70, maxZoom: 15, duration: 650 });
+        this.drawProgress();
+        window.setTimeout(() => { if (this.map) this.map.resize(); }, 80);
+      }
+
+      clearMapStory() {
+        if (!this.mapReady || !this.map) return;
+        const empty = { type: 'FeatureCollection', features: [] };
+        this.map.getSource('full-path').setData(empty);
+        this.map.getSource('active-path').setData(empty);
+        this.markers.forEach((marker) => marker.remove());
+        this.markers = [];
+        if (this.playhead) this.playhead.remove();
+        this.playhead = null;
+      }
+
+      drawProgress() {
+        if (!this.story.route.length) return;
+        const state = activeRouteState(this.story, this.progress);
+        if (this.mapReady && this.map) {
+          this.map.getSource('active-path').setData(state.features);
+          if (this.playhead && state.head) {
+            this.playhead.setLngLat(state.head);
+            if (this.playhead.setRotation) this.playhead.setRotation(state.bearing - 45);
+          }
+        }
+        this.range.value = String(this.progress);
+        this.currentTime.textContent = clockLabel(this.story.route[state.index].time);
+      }
+
+      togglePlay() {
+        if (!this.story.route.length) return;
+        if (this.playing) {
+          this.stop();
+          return;
+        }
+        if (this.progress >= 0.999) this.progress = 0;
+        this.playing = true;
+        this.startProgress = this.progress;
+        this.startedAt = performance.now();
+        this.updateControls();
+        const tick = (now) => {
+          if (!this.playing) return;
+          this.progress = Math.min(1, this.startProgress + (now - this.startedAt) / 18000);
+          this.drawProgress();
+          if (this.progress < 1) this.frame = requestAnimationFrame(tick);
+          else {
+            this.playing = false;
+            this.frame = null;
+            this.updateControls();
+          }
+        };
+        this.frame = requestAnimationFrame(tick);
+      }
+
+      scrub(progress) {
+        this.stop();
+        this.progress = Math.max(0, Math.min(1, progress));
+        this.drawProgress();
+        this.updateControls();
+      }
+
+      stop() {
+        this.playing = false;
+        if (this.frame) cancelAnimationFrame(this.frame);
+        this.frame = null;
+        this.updateControls();
+      }
+
+      destroy() {
+        this.stop();
+        if (this.resizeObserver) this.resizeObserver.disconnect();
+        this.markers.forEach((marker) => marker.remove());
+        if (this.playhead) this.playhead.remove();
+        if (this.map) this.map.remove();
+        this.map = null;
+        this.mapReady = false;
+      }
     }
 
     function clampDate(date) {
@@ -1293,7 +2080,7 @@
       const types = [];
       if (seed % 3 === 0) types.push('messages');
       if (seed % 7 === 0) types.push('instagram');
-      if (seed % 5 === 0) types.push('maps');
+      if (timelineDates.has(toLocalIso(date))) types.push('maps');
       if (seed % 4 === 0) types.push('photos');
       return types.slice(0, 3);
     }
@@ -1308,6 +2095,7 @@
       datePicker.value = toLocalIso(selectedDate);
       if (animate) animateWindback();
       renderCalendar(animate);
+      if (activeMapController) activeMapController.setDate(selectedDate);
     }
 
     function renderYearGrid() {
@@ -1474,6 +2262,8 @@
     });
 
     function hideSocialSurfaces() {
+      if (activeMapController) activeMapController.destroy();
+      activeMapController = null;
       socialPhoneView.classList.remove('open');
       socialPhoneView.setAttribute('aria-hidden', 'true');
       desktopAppPanel.classList.remove('open');
@@ -1481,6 +2271,24 @@
       stage.classList.remove('companion-open');
       phoneSocialContent.replaceChildren();
       desktopSocialContent.replaceChildren();
+    }
+
+    function renderMapSurface() {
+      hideSocialSurfaces();
+      const fragment = mapsTemplate.content.cloneNode(true);
+
+      if (desktopSocialQuery.matches) {
+        desktopSocialContent.append(fragment);
+        desktopAppPanel.classList.add('open');
+        desktopAppPanel.setAttribute('aria-hidden', 'false');
+        stage.classList.add('companion-open');
+        activeMapController = new MapController(desktopSocialContent.querySelector('.maps-app'));
+      } else {
+        phoneSocialContent.append(fragment);
+        socialPhoneView.classList.add('open');
+        socialPhoneView.setAttribute('aria-hidden', 'false');
+        activeMapController = new MapController(phoneSocialContent.querySelector('.maps-app'));
+      }
     }
 
     function bindSocialView(root, mode) {
@@ -1534,6 +2342,12 @@
       renderSocialSurface();
     }
 
+    function openMapApp() {
+      activeSocialApp = 'Maps';
+      closeApp();
+      renderMapSurface();
+    }
+
     function closeSocialApp() {
       const closedApp = activeSocialApp;
       activeSocialApp = null;
@@ -1543,13 +2357,18 @@
     }
 
     desktopSocialQuery.addEventListener('change', () => {
-      if (activeSocialApp) renderSocialSurface();
+      if (activeSocialApp === 'Maps') renderMapSurface();
+      else if (activeSocialApp) renderSocialSurface();
     });
 
     document.querySelectorAll('.app').forEach((button) => {
       button.addEventListener('click', () => {
         const name = button.dataset.name;
         const pos = button.dataset.pos;
+        if (name === 'Maps') {
+          openMapApp();
+          return;
+        }
         if (name === 'Messenger' || name === 'Instagram') {
           openSocialApp(name);
           return;
