@@ -8,7 +8,7 @@ This repository currently contains a visual and interaction prototype. It does n
 
 Open `index.html` in a modern browser. No build step or local server is currently required.
 
-The date in the top widget is interactive. The app icons open illustrated placeholder views. Messenger and Instagram use recognizable brand silhouettes, while the surrounding icon family uses original generated illustration.
+The prominent Windback card opens a dedicated time-machine view. It can move backward by a day, week, month, or year, scrub across the archive timeline, or choose an exact date. The other app icons open illustrated placeholder views. Messenger and Instagram use recognizable brand silhouettes, while the surrounding icon family uses original generated illustration.
 
 ## Project documentation
 

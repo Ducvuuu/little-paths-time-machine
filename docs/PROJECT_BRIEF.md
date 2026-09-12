@@ -190,7 +190,8 @@ A standalone home-screen study containing:
 
 - a flat illustrated phone frame
 - a dark starry wallpaper
-- a clickable date control
+- a prominent Windback time-machine launcher with its own generated icon
+- a dedicated date-winding view with day, week, month, year, timeline, and exact-date controls
 - a 20-position app grid
 - exact recognizable silhouettes for Facebook Messenger and Instagram
 - generated illustrated artwork for the remaining app concepts
@@ -225,6 +226,8 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - Generated an exploratory illustrated icon atlas.
 - Preserved exact brand recognition for Messenger and Instagram.
 - Corrected atlas crops using measured painted pixel bounds.
+- Added a prominent Windback app that replaces the generic header widget and controls the global date.
+- Generated a standalone Windback icon so its art does not depend on sprite-atlas cropping.
 - Created this dedicated local Git repository and formal project brief.
 
 ## 12. What has not been built
