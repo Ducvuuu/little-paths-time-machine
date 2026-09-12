@@ -10,6 +10,8 @@ Open `index.html` in a modern browser. No build step or local server is currentl
 
 The prominent Windback card opens an illustrated calendar. The user can browse months, jump directly to a year, choose an exact date, and preview which apps will contain memories through colored day markers. The lower home-screen widget is an illustrated Spotify player with working track and playback controls. The other app icons open illustrated placeholder views. Messenger and Instagram use recognizable brand silhouettes, while the surrounding icon family uses original generated illustration.
 
+Messenger and Instagram now have distinct responsive interface studies. On a desktop-sized window, selecting either app keeps the phone visible and opens a large archive reader beside it. On a narrow screen, the selected app occupies the phone display and follows an inbox-to-conversation flow.
+
 ## Project documentation
 
 - [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.md): product vision, intended experience, technical direction, current status, milestones, and open decisions

@@ -111,8 +111,8 @@ Motion should be quiet and characterful. Appropriate examples include a two-pixe
 | Application | Primary source | Intended first scope | Current status |
 |---|---|---|---|
 | Maps | Google Timeline export | One day, labelled stops, route playback | Existing Little Paths app is available separately; not integrated here |
-| Facebook Messenger | Facebook data export | Chats and inline photos for one day | Export research completed; importer not built |
-| Instagram | Instagram export | Direct messages only | Planned after Messenger |
+| Facebook Messenger | Facebook data export | Chats and inline photos for one day | Responsive interface prototype built; importer not built |
+| Instagram | Instagram export | Direct messages only | Responsive interface prototype built; importer not built |
 | Photos | Google Photos Takeout | Day-based photo roll | Planned; API approach rejected |
 
 ### Google Photos constraint
@@ -198,6 +198,9 @@ A standalone home-screen study containing:
 - subtle idle motion and press feedback
 - placeholder app-opening transitions
 - a compact illustrated Spotify widget with playback and track controls
+- distinct Messenger and Instagram DM interface prototypes with inboxes, conversations, and inline illustrated media
+- a desktop companion layout that opens social apps beside the phone
+- a phone layout that lets social apps take over the device screen
 - reduced-motion support
 
 The app views currently contain placeholder copy. They do not load real conversations, locations, or photos.
@@ -230,6 +233,8 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - Generated a standalone Windback icon so its art does not depend on sprite-atlas cropping.
 - Reworked Windback around an illustrated month calendar rather than a timeline scrubber.
 - Replaced the lower day-summary card with a recognizable illustrated Spotify player.
+- Added distinct Messenger and Instagram direct-message views.
+- Added responsive behavior that opens social apps beside the phone on large screens and inside the phone on small screens.
 - Created this dedicated local Git repository and formal project brief.
 
 ## 12. What has not been built
@@ -241,8 +246,8 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - No normalized archive schema has been finalized.
 - No directory picker or persistent file access exists.
 - No IndexedDB layer exists.
-- No real Messenger interface exists.
-- No Instagram importer or DM interface exists.
+- The Messenger interface is not connected to real archive data.
+- The Instagram DM interface is not connected to an importer or real archive data.
 - No Google Photos Takeout importer exists.
 - No tests exist for timezone bucketing, media paths, or damaged export data.
 - No mobile access or sharing system is planned at this stage.

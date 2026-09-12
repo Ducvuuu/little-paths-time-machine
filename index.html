@@ -38,9 +38,14 @@
 
     .stage {
       display: grid;
+      grid-template-columns: auto;
+      grid-template-rows: auto auto;
       justify-items: center;
       gap: 14px;
     }
+
+    .phone { grid-column: 1; grid-row: 1; }
+    .caption { grid-column: 1; grid-row: 2; }
 
     .phone {
       position: relative;
@@ -646,6 +651,251 @@
     .year-option.selected { background: var(--yellow); color: #292d40; transform: rotate(-1deg); }
     .year-option:active { transform: scale(.94); }
 
+    .social-phone-view {
+      position: absolute;
+      inset: 0;
+      z-index: 14;
+      overflow: hidden;
+      background: #141824;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 220ms ease, transform 300ms cubic-bezier(.2,.8,.2,1), visibility 0s linear 300ms;
+    }
+
+    .social-phone-view.open {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0s;
+    }
+
+    .desktop-app-panel { display: none; }
+    .mobile-social,
+    .desktop-social { width: 100%; height: 100%; }
+
+    .social-app {
+      --social-bg: #141b2d;
+      --social-panel: #1b2438;
+      --social-soft: #263149;
+      --social-ink: #f3f1e9;
+      --social-muted: #9ba4b8;
+      --social-accent: #77a9e4;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--social-bg);
+      color: var(--social-ink);
+    }
+
+    .instagram-app {
+      --social-bg: #15141c;
+      --social-panel: #1e1c25;
+      --social-soft: #2b2833;
+      --social-muted: #aaa4b1;
+      --social-accent: #d98983;
+    }
+
+    .desktop-social .social-app { display: grid; grid-template-columns: 260px minmax(0, 1fr); }
+    .mobile-social .social-app { display: block; }
+
+    .social-sidebar {
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--social-panel);
+    }
+
+    .social-brand-head,
+    .social-chat-head {
+      min-height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px 15px;
+    }
+
+    .social-brand-head { justify-content: space-between; }
+    .social-brand { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 17px; font-weight: 850; }
+    .social-brand svg { width: 25px; height: 25px; flex: none; fill: var(--social-accent); }
+    .instagram-app .social-brand { font-family: Georgia, serif; font-size: 19px; font-style: italic; }
+    .instagram-app .social-brand svg { fill: none; stroke: #f2eee7; stroke-width: 1.8; }
+
+    .social-close,
+    .social-back {
+      width: 34px;
+      height: 34px;
+      flex: none;
+      border: 0;
+      border-radius: 50%;
+      background: var(--social-soft);
+      color: var(--social-ink);
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .social-search {
+      min-height: 37px;
+      display: flex;
+      align-items: center;
+      margin: 0 13px 10px;
+      padding: 0 13px;
+      border-radius: 16px 19px 15px 18px;
+      background: var(--social-soft);
+      color: var(--social-muted);
+      font-size: 10px;
+    }
+
+    .instagram-note {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin: 0 13px 9px;
+      padding: 8px 10px;
+      border-radius: 18px 15px 19px 14px;
+      background: #292631;
+      color: var(--social-muted);
+      font-size: 9px;
+    }
+
+    .thread-list { min-height: 0; overflow: auto; padding: 2px 8px 14px; }
+    .thread {
+      width: 100%;
+      min-height: 64px;
+      display: grid;
+      grid-template-columns: 45px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 9px;
+      border: 0;
+      border-radius: 19px 16px 20px 15px;
+      padding: 8px 9px;
+      background: transparent;
+      color: var(--social-ink);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .thread:hover,
+    .thread.selected { background: var(--social-soft); }
+
+    .avatar {
+      width: 45px;
+      height: 45px;
+      display: grid;
+      place-items: center;
+      border-radius: 50% 46% 52% 43%;
+      background: var(--avatar);
+      color: #293043;
+      font-size: 14px;
+      font-weight: 900;
+      transform: rotate(-2deg);
+    }
+
+    .instagram-app .avatar { outline: 3px solid #b26f88; outline-offset: 2px; }
+    .thread-copy { min-width: 0; }
+    .thread-name { overflow: hidden; font-size: 11px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .thread-preview { margin-top: 4px; overflow: hidden; color: var(--social-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+    .thread-time { align-self: start; padding-top: 4px; color: var(--social-muted); font-size: 8px; }
+
+    .social-chat { min-width: 0; min-height: 0; display: grid; grid-template-rows: auto 1fr auto; background: var(--social-bg); }
+    .social-chat-head { background: var(--social-panel); }
+    .social-back { display: none; }
+    .chat-head-copy { min-width: 0; flex: 1; }
+    .chat-name { font-size: 12px; font-weight: 850; }
+    .chat-status { margin-top: 2px; color: var(--social-muted); font-size: 8px; }
+    .chat-symbol { color: var(--social-accent); font-size: 18px; }
+
+    .message-stream {
+      min-height: 0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 18px 20px;
+    }
+
+    .day-stamp { align-self: center; margin: 2px 0 7px; color: var(--social-muted); font-size: 8px; font-weight: 750; letter-spacing: .08em; }
+    .message { max-width: min(74%, 390px); padding: 9px 12px; border-radius: 17px 18px 18px 7px; background: var(--social-soft); color: var(--social-ink); font-size: 10px; line-height: 1.45; }
+    .message.mine { align-self: flex-end; border-radius: 18px 17px 7px 18px; background: var(--social-accent); color: #182134; }
+    .instagram-app .message.mine { background: #756b9a; color: #f6f1e9; }
+    .message-time { display: block; margin-top: 4px; opacity: .56; font-size: 7px; text-align: right; }
+
+    .photo-message { align-self: flex-start; max-width: min(78%, 410px); }
+    .memory-photo {
+      position: relative;
+      width: 230px;
+      max-width: 100%;
+      aspect-ratio: 1.42;
+      overflow: hidden;
+      border-radius: 22px 18px 23px 16px;
+      background: #87a9c2;
+    }
+
+    .memory-photo .sun { position: absolute; width: 39px; height: 39px; right: 23px; top: 23px; border-radius: 50%; background: #f1c765; }
+    .memory-photo .hill-one { position: absolute; width: 180px; height: 110px; left: -28px; bottom: -54px; border-radius: 50%; background: #789a82; transform: rotate(8deg); }
+    .memory-photo .hill-two { position: absolute; width: 190px; height: 105px; right: -60px; bottom: -48px; border-radius: 50%; background: #566f76; transform: rotate(-8deg); }
+    .memory-photo .path { position: absolute; width: 34px; height: 110px; left: 98px; bottom: -31px; border-radius: 50%; background: #f0e5cf; transform: rotate(13deg); }
+    .photo-caption { margin-top: 4px; color: var(--social-muted); font-size: 8px; }
+
+    .composer {
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 31px 1fr 31px;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--social-panel);
+    }
+
+    .composer-button { width: 31px; height: 31px; border: 0; border-radius: 50%; background: var(--social-accent); color: #1e2638; cursor: pointer; font-weight: 900; }
+    .instagram-app .composer-button { background: #756b9a; color: #f5eee5; }
+    .composer-field { min-height: 35px; display: flex; align-items: center; padding: 0 13px; border-radius: 18px; background: var(--social-soft); color: var(--social-muted); font-size: 9px; }
+
+    .mobile-social .social-sidebar { height: 100%; }
+    .mobile-social .social-chat { display: none; height: 100%; }
+    .mobile-social .social-app.show-chat .social-sidebar { display: none; }
+    .mobile-social .social-app.show-chat .social-chat { display: grid; }
+    .mobile-social .social-back { display: grid; place-items: center; }
+    .mobile-social .message-stream { padding: 16px 14px; }
+    .mobile-social .memory-photo { width: 205px; }
+    .mobile-social .social-brand-head { padding-top: 22px; }
+
+    @media (min-width: 900px) {
+      .stage.companion-open {
+        grid-template-columns: auto minmax(470px, 720px);
+        grid-template-rows: auto auto;
+        align-items: center;
+        column-gap: 30px;
+      }
+
+      .stage.companion-open .phone { grid-column: 1; grid-row: 1; }
+      .stage.companion-open .caption { grid-column: 1; grid-row: 2; }
+      .desktop-app-panel.open {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        display: block;
+        width: min(720px, calc(100vw - 470px));
+        height: min(780px, calc(100vh - 48px));
+        min-height: 590px;
+        overflow: hidden;
+        border-radius: 34px 29px 37px 30px;
+        background: #141824;
+        animation: companion-arrive 340ms cubic-bezier(.2,.8,.2,1);
+      }
+
+      @keyframes companion-arrive {
+        from { opacity: 0; transform: translateX(18px) scale(.98); }
+        to { opacity: 1; transform: translateX(0) scale(1); }
+      }
+    }
+
+    @media (max-width: 899px) {
+      .desktop-app-panel { display: none !important; }
+    }
+
     .hidden-date {
       position: fixed;
       width: 1px;
@@ -815,6 +1065,10 @@
           </div>
         </section>
 
+        <section class="social-phone-view" id="socialPhoneView" aria-hidden="true">
+          <div class="mobile-social" id="phoneSocialContent"></div>
+        </section>
+
         <section class="app-view" id="appView" aria-hidden="true">
           <header class="app-head">
             <button class="back" id="backButton" type="button" aria-label="Back to home">‹</button>
@@ -832,7 +1086,109 @@
     </section>
 
     <div class="caption">Little Paths · illustrated home study</div>
+    <section class="desktop-app-panel" id="desktopAppPanel" aria-hidden="true">
+      <div class="desktop-social" id="desktopSocialContent"></div>
+    </section>
   </main>
+
+  <template id="messengerTemplate">
+    <div class="social-app messenger-app">
+      <aside class="social-sidebar">
+        <header class="social-brand-head">
+          <div class="social-brand">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.24 0 0 4.952 0 11.64c0 3.499 1.434 6.521 3.769 8.61a.96.96 0 0 1 .323.683l.065 2.135a.96.96 0 0 0 1.347.85l2.381-1.053a.96.96 0 0 1 .641-.046A13 13 0 0 0 12 23.28c6.76 0 12-4.952 12-11.64S18.76 0 12 0m6.806 7.44c.522-.03.971.567.63 1.094l-4.178 6.457a.707.707 0 0 1-.977.208l-3.87-2.504a.44.44 0 0 0-.49.007l-4.363 3.01c-.637.438-1.415-.317-.995-.966l4.179-6.457a.706.706 0 0 1 .977-.21l3.87 2.505c.15.097.344.094.491-.007l4.362-3.008a.7.7 0 0 1 .364-.13"/></svg>
+            <span>Messenger</span>
+          </div>
+          <button class="social-close" type="button" data-close-social aria-label="Close Messenger">×</button>
+        </header>
+        <div class="social-search">⌕ &nbsp; Search this day</div>
+        <div class="thread-list">
+          <button class="thread selected" type="button" data-open-thread data-name="Mia" data-initial="M" data-color="#ef8a7d">
+            <span class="avatar" style="--avatar:#ef8a7d">M</span><span class="thread-copy"><span class="thread-name">Mia</span><span class="thread-preview">The light was so pretty today</span></span><span class="thread-time">22:18</span>
+          </button>
+          <button class="thread" type="button" data-open-thread data-name="Family" data-initial="F" data-color="#f0c86c">
+            <span class="avatar" style="--avatar:#f0c86c">F</span><span class="thread-copy"><span class="thread-name">Family</span><span class="thread-preview">Mom sent a photo</span></span><span class="thread-time">19:42</span>
+          </button>
+          <button class="thread" type="button" data-open-thread data-name="Huy" data-initial="H" data-color="#87abc5">
+            <span class="avatar" style="--avatar:#87abc5">H</span><span class="thread-copy"><span class="thread-name">Huy</span><span class="thread-preview">See you by the river?</span></span><span class="thread-time">15:06</span>
+          </button>
+          <button class="thread" type="button" data-open-thread data-name="Old friends" data-initial="O" data-color="#9fb798">
+            <span class="avatar" style="--avatar:#9fb798">O</span><span class="thread-copy"><span class="thread-name">Old friends</span><span class="thread-preview">You: I remember that place</span></span><span class="thread-time">10:31</span>
+          </button>
+        </div>
+      </aside>
+      <section class="social-chat">
+        <header class="social-chat-head">
+          <button class="social-back" type="button" data-back-to-inbox aria-label="Back to conversations">‹</button>
+          <span class="avatar" data-chat-avatar style="--avatar:#ef8a7d">M</span>
+          <div class="chat-head-copy"><div class="chat-name" data-chat-name>Mia</div><div class="chat-status">Messenger · from this day</div></div>
+          <span class="chat-symbol">✦</span>
+        </header>
+        <div class="message-stream">
+          <div class="day-stamp" data-social-date>FRIDAY, 11 SEPTEMBER · 2026</div>
+          <div class="message">Do you remember the little path behind the café?<span class="message-time">17:24</span></div>
+          <div class="message mine">Yes. I walked there again this afternoon.<span class="message-time">17:26</span></div>
+          <div class="photo-message">
+            <div class="memory-photo" role="img" aria-label="Illustrated sunset path"><span class="sun"></span><span class="hill-one"></span><span class="hill-two"></span><span class="path"></span></div>
+            <div class="photo-caption">Sent at 17:28</div>
+          </div>
+          <div class="message">The light was so pretty today.<span class="message-time">17:31</span></div>
+          <div class="message mine">Saving this one for future me ✦<span class="message-time">17:34</span></div>
+        </div>
+        <div class="composer"><button class="composer-button" type="button" aria-label="Add media">＋</button><div class="composer-field">Message from the past...</div><button class="composer-button" type="button" aria-label="Send a heart">♥</button></div>
+      </section>
+    </div>
+  </template>
+
+  <template id="instagramTemplate">
+    <div class="social-app instagram-app">
+      <aside class="social-sidebar">
+        <header class="social-brand-head">
+          <div class="social-brand">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.45" cy="6.65" r="1.15" fill="currentColor" stroke="none"/></svg>
+            <span>Instagram</span>
+          </div>
+          <button class="social-close" type="button" data-close-social aria-label="Close Instagram">×</button>
+        </header>
+        <div class="social-search">⌕ &nbsp; Search messages</div>
+        <div class="instagram-note"><span class="avatar" style="--avatar:#aaa0cf;width:34px;height:34px;font-size:11px">You</span><span>Your note from this day<br><strong style="color:#eee9df">slow afternoons ✦</strong></span></div>
+        <div class="thread-list">
+          <button class="thread selected" type="button" data-open-thread data-name="Linh" data-initial="L" data-color="#d98983">
+            <span class="avatar" style="--avatar:#d98983">L</span><span class="thread-copy"><span class="thread-name">Linh</span><span class="thread-preview">Replied to your photo</span></span><span class="thread-time">21:04</span>
+          </button>
+          <button class="thread" type="button" data-open-thread data-name="Noah" data-initial="N" data-color="#87abc5">
+            <span class="avatar" style="--avatar:#87abc5">N</span><span class="thread-copy"><span class="thread-name">Noah</span><span class="thread-preview">Sent a reel</span></span><span class="thread-time">18:21</span>
+          </button>
+          <button class="thread" type="button" data-open-thread data-name="travel notes" data-initial="T" data-color="#9fb798">
+            <span class="avatar" style="--avatar:#9fb798">T</span><span class="thread-copy"><span class="thread-name">travel notes</span><span class="thread-preview">You shared a photo</span></span><span class="thread-time">14:10</span>
+          </button>
+          <button class="thread" type="button" data-open-thread data-name="Mai" data-initial="M" data-color="#f0c86c">
+            <span class="avatar" style="--avatar:#f0c86c">M</span><span class="thread-copy"><span class="thread-name">Mai</span><span class="thread-preview">That place looks peaceful</span></span><span class="thread-time">09:44</span>
+          </button>
+        </div>
+      </aside>
+      <section class="social-chat">
+        <header class="social-chat-head">
+          <button class="social-back" type="button" data-back-to-inbox aria-label="Back to direct messages">‹</button>
+          <span class="avatar" data-chat-avatar style="--avatar:#d98983">L</span>
+          <div class="chat-head-copy"><div class="chat-name" data-chat-name>Linh</div><div class="chat-status">Instagram · direct message</div></div>
+          <span class="chat-symbol">♡</span>
+        </header>
+        <div class="message-stream">
+          <div class="day-stamp" data-social-date>11 SEPTEMBER 2026</div>
+          <div class="message">Your photo feels like the end of a movie.</div>
+          <div class="photo-message">
+            <div class="memory-photo" role="img" aria-label="Illustrated sunset path"><span class="sun"></span><span class="hill-one"></span><span class="hill-two"></span><span class="path"></span></div>
+            <div class="photo-caption">Photo shared to the chat</div>
+          </div>
+          <div class="message mine">It felt that way when I took it.</div>
+          <div class="message">Keep it. You will want to find this day again.</div>
+          <div class="message mine">That is exactly the plan ♡</div>
+        </div>
+        <div class="composer"><button class="composer-button" type="button" aria-label="Open camera">◎</button><div class="composer-field">Message...</div><button class="composer-button" type="button" aria-label="Send a heart">♡</button></div>
+      </section>
+    </div>
+  </template>
 
   <input class="hidden-date" id="datePicker" type="date" value="2026-09-11" aria-label="Choose a day">
 
@@ -862,6 +1218,13 @@
     const emptyTitle = document.getElementById('emptyTitle');
     const emptyCopy = document.getElementById('emptyCopy');
     const backButton = document.getElementById('backButton');
+    const stage = document.querySelector('.stage');
+    const socialPhoneView = document.getElementById('socialPhoneView');
+    const phoneSocialContent = document.getElementById('phoneSocialContent');
+    const desktopAppPanel = document.getElementById('desktopAppPanel');
+    const desktopSocialContent = document.getElementById('desktopSocialContent');
+    const messengerTemplate = document.getElementById('messengerTemplate');
+    const instagramTemplate = document.getElementById('instagramTemplate');
     const spotifyCard = document.getElementById('spotifyCard');
     const spotifyTrack = document.getElementById('spotifyTrack');
     const spotifyArtist = document.getElementById('spotifyArtist');
@@ -881,6 +1244,8 @@
     ];
     let currentTrack = 0;
     let spotifyIsPlaying = false;
+    let activeSocialApp = null;
+    const desktopSocialQuery = window.matchMedia('(min-width: 900px)');
 
     function parseLocalDate(value) {
       const [year, month, day] = value.split('-').map(Number);
@@ -1108,10 +1473,89 @@
       updateSelectedDate(parseLocalDate(datePicker.value));
     });
 
+    function hideSocialSurfaces() {
+      socialPhoneView.classList.remove('open');
+      socialPhoneView.setAttribute('aria-hidden', 'true');
+      desktopAppPanel.classList.remove('open');
+      desktopAppPanel.setAttribute('aria-hidden', 'true');
+      stage.classList.remove('companion-open');
+      phoneSocialContent.replaceChildren();
+      desktopSocialContent.replaceChildren();
+    }
+
+    function bindSocialView(root, mode) {
+      const dateLabel = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+      root.querySelectorAll('[data-social-date]').forEach((stamp) => { stamp.textContent = dateLabel; });
+
+      root.querySelectorAll('[data-close-social]').forEach((button) => {
+        button.addEventListener('click', closeSocialApp);
+      });
+
+      root.querySelectorAll('[data-back-to-inbox]').forEach((button) => {
+        button.addEventListener('click', () => root.classList.remove('show-chat'));
+      });
+
+      root.querySelectorAll('[data-open-thread]').forEach((button) => {
+        button.addEventListener('click', () => {
+          root.querySelectorAll('[data-open-thread]').forEach((thread) => thread.classList.remove('selected'));
+          button.classList.add('selected');
+          root.querySelectorAll('[data-chat-name]').forEach((name) => { name.textContent = button.dataset.name; });
+          root.querySelectorAll('[data-chat-avatar]').forEach((avatar) => {
+            avatar.textContent = button.dataset.initial;
+            avatar.style.setProperty('--avatar', button.dataset.color);
+          });
+          if (mode === 'mobile') root.classList.add('show-chat');
+        });
+      });
+    }
+
+    function renderSocialSurface() {
+      if (!activeSocialApp) return;
+      const template = activeSocialApp === 'Messenger' ? messengerTemplate : instagramTemplate;
+      hideSocialSurfaces();
+
+      if (desktopSocialQuery.matches) {
+        desktopSocialContent.append(template.content.cloneNode(true));
+        bindSocialView(desktopSocialContent.querySelector('.social-app'), 'desktop');
+        desktopAppPanel.classList.add('open');
+        desktopAppPanel.setAttribute('aria-hidden', 'false');
+        stage.classList.add('companion-open');
+      } else {
+        phoneSocialContent.append(template.content.cloneNode(true));
+        bindSocialView(phoneSocialContent.querySelector('.social-app'), 'mobile');
+        socialPhoneView.classList.add('open');
+        socialPhoneView.setAttribute('aria-hidden', 'false');
+      }
+    }
+
+    function openSocialApp(name) {
+      activeSocialApp = name;
+      closeApp();
+      renderSocialSurface();
+    }
+
+    function closeSocialApp() {
+      const closedApp = activeSocialApp;
+      activeSocialApp = null;
+      hideSocialSurfaces();
+      const launcher = document.querySelector(`.app[data-name="${closedApp}"]`);
+      if (launcher) launcher.focus();
+    }
+
+    desktopSocialQuery.addEventListener('change', () => {
+      if (activeSocialApp) renderSocialSurface();
+    });
+
     document.querySelectorAll('.app').forEach((button) => {
       button.addEventListener('click', () => {
         const name = button.dataset.name;
         const pos = button.dataset.pos;
+        if (name === 'Messenger' || name === 'Instagram') {
+          openSocialApp(name);
+          return;
+        }
+        activeSocialApp = null;
+        hideSocialSurfaces();
         appName.textContent = name;
         emptyTitle.textContent = name === 'Maps' ? 'Where did the day take you?' : `A little piece of ${name}`;
         emptyCopy.textContent = ['Messenger', 'Instagram', 'Maps', 'Photos'].includes(name)
@@ -1132,7 +1576,8 @@
     backButton.addEventListener('click', closeApp);
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return;
-      if (yearPanel.classList.contains('open')) closeYearPicker();
+      if (activeSocialApp) closeSocialApp();
+      else if (yearPanel.classList.contains('open')) closeYearPicker();
       else if (windbackView.classList.contains('open')) closeWindback();
       else closeApp();
     });
