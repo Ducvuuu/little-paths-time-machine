@@ -26,7 +26,7 @@ Maps then renders the selected day's route, stops, travelled distance, and an an
 - [`docs/MEMORY_BOX.md`](docs/MEMORY_BOX.md): how importing works, what the Memory Box looks for, and the two folder-access backends
 - [`docs/MAPS_INTEGRATION.md`](docs/MAPS_INTEGRATION.md): implemented Maps scope, supported import, interaction model, and known limitations
 - [`docs/MESSAGE_ARCHIVE.md`](docs/MESSAGE_ARCHIVE.md): Messenger and Instagram export format, the multipart merge requirement, and the normalizer
-- [`docs/reference/home-screen-reference.jpg`](docs/reference/home-screen-reference.jpg): the original composition reference supplied for the home-screen exploration
+- [`docs/reference/`](docs/reference/): what the original composition reference contributed, and why the image itself is not included
 
 ## Current structure
 
@@ -41,7 +41,7 @@ little-paths-time-machine/
 │   ├── MESSAGE_ARCHIVE.md
 │   ├── PROJECT_BRIEF.md
 │   └── reference/
-│       └── home-screen-reference.jpg
+│       └── README.md
 ├── scripts/
 │   ├── normalize-messages.mjs
 │   └── validate-timeline.mjs

@@ -111,8 +111,8 @@ Motion should be quiet and characterful. Appropriate examples include a two-pixe
 | Application | Primary source | Intended first scope | Current status |
 |---|---|---|---|
 | Maps | Google Timeline export | One day, labelled stops, route playback | Working on real data; imported through the Memory Box |
-| Facebook Messenger | Facebook data export | Chats and inline photos for one day | Working on real data; 560 threads, 1.27M messages |
-| Instagram | Instagram export | Direct messages only | Working on real data; 86 threads, 20,719 messages |
+| Facebook Messenger | Facebook data export | Chats and inline photos for one day | Working on real data |
+| Instagram | Instagram export | Direct messages only | Working on real data |
 | Photos | Google Photos Takeout | Day-based photo roll | Planned; API approach rejected |
 
 ### Google Photos constraint
@@ -214,9 +214,9 @@ A generated transparent raster atlas containing 20 graphic-art icon concepts. Th
 
 The atlas is exploratory. Before production work, replacing it with one file per approved icon would simplify cropping, responsive sizing, animation, and maintenance.
 
-### `docs/reference/home-screen-reference.jpg`
+### `docs/reference/`
 
-The original screenshot used as a composition reference. Its narrow centered grid, dark wallpaper, widgets, and phone-screen rhythm are useful references. Its dimensional icon treatment is not the desired final art direction.
+The composition reference used at the start was a third-party phone-mockup design and is not redistributed here. That folder's note records what was taken from it: a narrow centred grid, dark wallpaper, widget placement, and phone-screen rhythm. Its dimensional icon treatment was explicitly *not* carried forward.
 
 ## 11. Work completed so far
 
@@ -243,7 +243,7 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - Added local session-only Timeline import with no archive upload.
 - Created this dedicated local Git repository and formal project brief.
 - Established that the real exports arrived as HTML, and that HTML is the better input than JSON.
-- Confirmed the seven Messenger ZIP parts form one export, with media for 125 threads spread across parts.
+- Confirmed a multipart Messenger export forms one logical archive, with media for many threads spread across parts.
 - Built a local normalizer producing a day-indexed archive from the HTML exports.
 - Built the Memory Box as the single owner of importing, with the folder remembered between visits.
 - Established that these exports store rather than compress, so the ZIPs can be read in place.
@@ -256,7 +256,7 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - No Google Photos Takeout importer exists.
 - No tests exist for timezone bucketing, media paths, or damaged export data.
 - Reactions, replies, calls, polls, and share cards are not extracted from conversations.
-- A browser build of the full 17 GB Messenger set is unverified; only the Node path has processed it.
+- A browser build of a multi-gigabyte Messenger set is unverified; only the Node path has processed one.
 - Maps still buckets dates at a fixed UTC+07:00 rather than using the per-segment offsets the Timeline file carries.
 - No mobile access or sharing system is planned at this stage.
 
@@ -407,6 +407,6 @@ The first meaningful release is not the completed four-app phone. It is a privat
 6. Closing and reopening the local app does not require reparsing the full export.
 7. No archive content leaves the device.
 
-All seven hold, with one caveat worth keeping in view: step 6 is proven for a prebuilt archive and for the Instagram export read straight from its ZIP, but a full browser build of the 17 GB Messenger set has not yet been run.
+All seven hold, with one caveat worth keeping in view: step 6 is proven for a prebuilt archive and for a smaller export read straight from its ZIP, but a full browser build of a multi-gigabyte Messenger set has not yet been run.
 
 That foundation now also carries Instagram DMs and Maps. Photos Takeout is the remaining source.

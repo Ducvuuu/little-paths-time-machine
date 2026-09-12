@@ -26,9 +26,9 @@ A prebuilt archive wins when one is present, because the work is already done. O
 
 ## Reading zips without unpacking them
 
-Facebook **stores** rather than compresses these exports — every entry across all eight of this archive's parts uses method 0. An entry is therefore a byte range, and reading a photo out of a 2.8 GB zip is a slice, not a decompression. The eight parts are read as one folder.
+Facebook **stores** rather than compresses these exports — in the export checked, every entry across all eight parts used method 0. An entry is therefore a byte range, and reading a photo out of a 2.8 GB zip is a slice, not a decompression. The eight parts are read as one folder.
 
-That removes the merge step and the trap that came with it: 125 threads have their media spread across several parts, and the combined entry index makes "which part holds this photo" a lookup rather than something the owner has to get right when unpacking.
+That removes the merge step and the trap that came with it: a large share of threads have their media spread across several parts, and the combined entry index makes "which part holds this photo" a lookup rather than something the owner has to get right when unpacking.
 
 Building runs in a worker so the phone stays responsive, and the result is kept in IndexedDB keyed by the zip filenames and sizes — so it is built once and reread instantly, and rebuilt only when the zips actually change. Days are handed back in batches of 150 and written as they arrive; posting a million messages in one message would hold the archive twice while the copy was made. The index is written last, so an interrupted build is rebuilt rather than read back half-finished.
 
@@ -40,7 +40,7 @@ Message media is resolved relative to the archive index, or straight out of the 
 
 Browsers only let a *served* page retain a directory choice, so the Memory Box carries two backends behind one contract — `getFile(path)` and `findTimeline()`. Nothing else in the interface knows which is in use.
 
-**Served** (`start-little-paths.cmd`, then `http://localhost:8731/`): the File System Access API supplies a directory handle, stored in IndexedDB. The folder is chosen once. On return the handle's permission is queried silently; if the browser has downgraded it to `prompt`, the Memory Box says so and offers to reconnect rather than failing quietly. Zip entries are read through the handle on demand, so a 17 GB archive is never held in memory.
+**Served** (`start-little-paths.cmd`, then `http://localhost:8731/`): the File System Access API supplies a directory handle, stored in IndexedDB. The folder is chosen once. On return the handle's permission is queried silently; if the browser has downgraded it to `prompt`, the Memory Box says so and offers to reconnect rather than failing quietly. Zip entries are read through the handle on demand, so an archive of any size is never held in memory.
 
 **Opened from disk** (`index.html` by double-click): `showDirectoryPicker` does not exist, so a `webkitdirectory` input is used instead. Everything works, but the folder must be chosen again after each reload.
 
@@ -52,15 +52,17 @@ Before a folder is connected the calendar keeps its illustrative markers, so the
 
 ## Measured behaviour
 
-Against a prebuilt archive — 1.29 million messages, 3,864 indexed days, a 28 MB Timeline file — discovery, parsing, and adoption complete in about 0.4 seconds. The index stays resident; days are read only when opened.
+Measured against one real archive of roughly a million messages and about a decade of location history:
 
-Building from a zip instead: the 204 MB Instagram export's central directory parses in 2 ms, and the whole export — 86 threads, 20,719 messages, 950 attachments — is parsed, stored, and adopted in 0.6 seconds. Reconnecting afterwards takes 391 ms and rebuilds nothing. The counts match the Node normalizer exactly.
+- Connecting a **prebuilt** archive — discovery, parsing, adoption, including a 28 MB Timeline file — takes about **0.4 seconds**. The index stays resident; days are read only when opened.
+- Building from a **zip** instead: a 200 MB export's central directory parses in **2 ms**, and the whole export is parsed, stored, and adopted in well under a second. Counts match the Node normalizer exactly.
+- **Reconnecting** afterwards takes under half a second and rebuilds nothing.
 
-The full 17 GB Messenger set has not been built in the browser; only the Node path has processed it. The zip reading, worker, batching, and storage are the same code, but the time and memory that build takes are unmeasured.
+A multi-gigabyte Messenger set has not been built in the browser; only the Node path has processed one. The zip reading, worker, batching, and storage are the same code either way, but the time and memory that build takes are unmeasured.
 
 ## Not built yet
 
 - Photos has no importer.
-- A browser build of the full 17 GB Messenger set is unverified.
+- A browser build of a multi-gigabyte Messenger set is unverified.
 - Day files are cached for the session but not between visits.
 - Reactions, replies, calls, and share cards are not extracted, so they do not appear in a conversation.

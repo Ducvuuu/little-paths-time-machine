@@ -27,12 +27,12 @@ If a future export changes these tokens, the parser stops finding messages and r
 
 ## Merging the export parts
 
-Facebook splits one export by size, not by meaning. This export arrived as seven ZIP files:
+Facebook splits one export by size, not by meaning. One real export arrived as seven ZIP files, and the shape is worth knowing because it is the trap:
 
-- 560 thread folders in total, all listed in one part
-- 125 of the 290 threads that contain media have that media spread across other parts
-- 13 threads have attachments in all seven parts
-- no filename appears in more than one part
+- every thread folder was listed in a single part, but that part held almost none of the media
+- **43%** of the threads containing media had it spread across other parts
+- a handful had attachments in all seven parts at once
+- no filename appeared in more than one part
 
 **If the parts are extracted, they must go into one shared directory.** Extracting them separately loses attachments on 125 threads with no error. Because there are no duplicate paths, extracting into one directory overwrites nothing. Verify a merge by comparing the extracted file count against the combined ZIP listings.
 
@@ -85,15 +85,13 @@ Message times are local wall-clock strings with no timezone, matching how the ex
 
 ## Measured result
 
-| | Messenger | Instagram |
-|---|---|---|
-| Threads | 560 | 86 |
-| Messages | 1,270,480 | 20,719 |
-| Attachments | 77,489 | 950 |
+Figures below come from one real archive of roughly a million messages and tens of thousands of attachments, spanning about eleven years. They are here to show the shape of the problem, not to be reproduced.
 
-Combined: 1,291,199 messages across 3,864 days, 2015-09-10 to 2026-09-07. Conversion takes about 22 seconds. The archive is 126 MB — a 630 KB index plus day files averaging 31 KB.
-
-Verified after conversion: every attachment path resolves to a file on disk, no conversation is out of chronological order, and 29 messages of 1.29 million lack an identifiable sender.
+- Conversion runs at roughly **60,000 messages per second**, so a decade of history takes about twenty seconds.
+- The output is around **a tenth of a percent** of the export it describes: a sub-megabyte index plus day files averaging tens of kilobytes.
+- **Every** attachment path resolved to a file on disk.
+- **No** conversation came out of chronological order.
+- Fewer than **1 in 40,000** messages lacked an identifiable sender.
 
 ## Skipped blocks
 
@@ -103,7 +101,7 @@ The normalizer skips message blocks carrying neither text nor media: 20,006 in M
 
 The interface never opens the export. It reads `index.json` once, then one `days/<date>.json` when a day is opened, and resolves each media path against the export folder recorded as `mediaDir`. A day file is a few tens of kilobytes, so opening a date costs one small read rather than a scan.
 
-Messages carry a sender name, not a role. The normalizer records an `owner` per source — the person present in more conversations than anyone else, 434 of 560 threads in Messenger and 81 of 86 in Instagram — and the interface uses that to decide which side of the conversation a message belongs on. The two accounts have different display names, so the owner is recorded per source rather than once.
+Messages carry a sender name, not a role. The normalizer records an `owner` per source — the person present in more conversations than anyone else — and the interface uses that to decide which side of the conversation a message belongs on. In practice the margin is wide: the owner appeared in around four fifths of threads, the next name nowhere close. Accounts on different services usually carry different display names, so the owner is recorded per source rather than once.
 
 Where a thread has more than one other participant, senders are named above their messages; in a conversation between two people the bubbles carry that on their own.
 
