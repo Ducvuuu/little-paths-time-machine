@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Little Paths Home</title>
+  <style>
+    :root {
+      --page: #ebe8e3;
+      --phone-edge: #282b38;
+      --screen: #121526;
+      --screen-soft: #191d31;
+      --card: #25293d;
+      --cream: #f5eddb;
+      --muted: #aaaec0;
+      --coral: #ef7f70;
+      --yellow: #f1c765;
+      --sage: #91ad91;
+      --blue: #82a8c5;
+      --lavender: #aaa0cf;
+      --ink: #34394c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 28px 16px 38px;
+      background: var(--page);
+      color: var(--cream);
+      font-family: ui-rounded, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+    }
+
+    button { font: inherit; }
+
+    .stage {
+      display: grid;
+      justify-items: center;
+      gap: 14px;
+    }
+
+    .phone {
+      position: relative;
+      width: min(390px, calc(100vw - 32px));
+      aspect-ratio: 390 / 844;
+      padding: 7px;
+      overflow: visible;
+      border: 3px solid var(--phone-edge);
+      border-radius: 54px;
+      background: #d8d6d0;
+    }
+
+    .side-button {
+      position: absolute;
+      right: -6px;
+      width: 4px;
+      border-radius: 0 3px 3px 0;
+      background: var(--phone-edge);
+    }
+
+    .side-button.one { top: 160px; height: 46px; }
+    .side-button.two { top: 218px; height: 46px; }
+    .side-button.three { top: 294px; height: 74px; }
+
+    .screen {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border-radius: 45px;
+      background: var(--screen);
+      isolation: isolate;
+    }
+
+    .night-shape {
+      position: absolute;
+      z-index: -2;
+      border-radius: 50%;
+      background: var(--screen-soft);
+      opacity: .62;
+    }
+
+    .night-shape.a { width: 270px; height: 270px; left: -135px; top: 80px; }
+    .night-shape.b { width: 220px; height: 220px; right: -110px; bottom: 90px; }
+    .night-shape.c { width: 150px; height: 150px; left: 80px; bottom: -92px; }
+
+    .star {
+      position: absolute;
+      z-index: -1;
+      width: 7px;
+      height: 7px;
+      color: #767b9d;
+      opacity: .42;
+      animation: blink 4.8s ease-in-out infinite;
+    }
+
+    .star::before,
+    .star::after {
+      content: "";
+      position: absolute;
+      inset: 3px 0;
+      border-radius: 5px;
+      background: currentColor;
+    }
+
+    .star::after { transform: rotate(90deg); }
+    .star.small { transform: scale(.55); }
+    .star.large { transform: scale(1.35); }
+
+    @keyframes blink {
+      0%, 100% { opacity: .22; transform: scale(.7) rotate(0deg); }
+      50% { opacity: .72; transform: scale(1) rotate(18deg); }
+    }
+
+    .status {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      width: 258px;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #e8e6e0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .signals { display: flex; align-items: center; gap: 7px; color: #aeb2c4; }
+    .signal-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .battery { width: 15px; height: 8px; border: 2px solid currentColor; border-radius: 3px; }
+
+    .home {
+      position: absolute;
+      inset: 54px 0 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .column { width: 258px; }
+
+    .clock-card,
+    .day-card {
+      background: var(--card);
+      border-radius: 22px;
+    }
+
+    .clock-card {
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 14px 14px 17px;
+      animation: card-drift 7s ease-in-out infinite;
+    }
+
+    @keyframes card-drift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    .clock-copy { flex: 1; min-width: 0; }
+    .time { font-size: 20px; line-height: 1; font-weight: 800; }
+    .date-line { margin-top: 8px; color: var(--muted); font-size: 11px; line-height: 1.45; }
+
+    .date-button {
+      display: block;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      color: var(--cream);
+      cursor: pointer;
+      text-align: left;
+      font-weight: 650;
+    }
+
+    .date-button:hover { color: #ffffff; }
+
+    .planet-avatar {
+      width: 58px;
+      height: 58px;
+      flex: none;
+      background-image: url("assets/little-paths-icon-atlas.png");
+      background-repeat: no-repeat;
+      background-size: 440% 550%;
+      background-position: 34.84% 94.2%;
+      animation: orbit 6s ease-in-out infinite;
+    }
+
+    @keyframes orbit {
+      0%, 100% { transform: rotate(-3deg) translateY(1px); }
+      50% { transform: rotate(4deg) translateY(-2px); }
+    }
+
+    .apps {
+      display: grid;
+      grid-template-columns: repeat(4, 56px);
+      grid-auto-rows: 60px;
+      justify-content: space-between;
+      row-gap: 5px;
+      margin-top: 18px;
+    }
+
+    .app {
+      position: relative;
+      width: 56px;
+      height: 60px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app-art {
+      display: block;
+      width: 56px;
+      height: 60px;
+      background-image: url("assets/little-paths-icon-atlas.png");
+      background-repeat: no-repeat;
+      background-size: 440% 550%;
+      transform-origin: 50% 75%;
+      animation: icon-breathe 4.5s ease-in-out infinite;
+      animation-delay: calc(var(--i) * -170ms);
+    }
+
+    .brand-art {
+      position: relative;
+      isolation: isolate;
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 60px;
+      color: var(--cream);
+      transform-origin: 50% 75%;
+      animation: icon-breathe 4.5s ease-in-out infinite;
+      animation-delay: calc(var(--i) * -170ms);
+    }
+
+    .brand-art::before {
+      content: "";
+      position: absolute;
+      inset: 5px 3px 3px;
+      z-index: -1;
+      border-radius: 19px 17px 21px 16px;
+      transform: rotate(-1.5deg);
+      background: var(--brand-tile);
+    }
+
+    .brand-art::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      right: 7px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--brand-detail);
+    }
+
+    .brand-art svg { width: 30px; height: 30px; display: block; fill: currentColor; }
+    .brand-messenger { --brand-tile: #719ac4; --brand-detail: #f1c765; }
+    .brand-instagram { --brand-tile: #e88177; --brand-detail: #aaa0cf; }
+    .brand-instagram::after { display: none; }
+    .brand-instagram svg { fill: none; stroke: currentColor; stroke-width: 2.15; stroke-linecap: round; stroke-linejoin: round; }
+
+    @keyframes icon-breathe {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-2px) rotate(.8deg); }
+    }
+
+    .app:hover .app-art,
+    .app:hover .brand-art { animation-play-state: paused; transform: translateY(-3px) rotate(-2deg) scale(1.05); }
+    .app:active .app-art,
+    .app:active .brand-art { transform: translateY(2px) scale(.9, 1.08); }
+    .app:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; border-radius: 16px; }
+
+    .p00 { background-position: 4.62% 4.37%; } .p10 { background-position: 34.84% 4.37%; }
+    .p20 { background-position: 66.56% 4.37%; } .p30 { background-position: 97.1% 4.37%; }
+    .p01 { background-position: 4.62% 26.15%; } .p11 { background-position: 34.84% 26.15%; }
+    .p21 { background-position: 66.56% 26.15%; } .p31 { background-position: 97.1% 26.15%; }
+    .p02 { background-position: 4.62% 48.8%; } .p12 { background-position: 34.84% 48.8%; }
+    .p22 { background-position: 66.56% 48.8%; } .p32 { background-position: 97.1% 48.8%; }
+    .p03 { background-position: 4.62% 72.4%; } .p13 { background-position: 34.84% 72.4%; }
+    .p23 { background-position: 66.56% 72.4%; } .p33 { background-position: 97.1% 72.4%; }
+    .p04 { background-position: 4.62% 94.2%; } .p14 { background-position: 34.84% 94.2%; }
+    .p24 { background-position: 66.56% 94.2%; } .p34 { background-position: 97.1% 94.2%; }
+
+    .day-card {
+      min-height: 82px;
+      margin-top: 17px;
+      padding: 12px 15px;
+      display: grid;
+      grid-template-columns: 45px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      animation: card-drift 8.5s ease-in-out -2s infinite;
+    }
+
+    .day-flower {
+      width: 45px;
+      height: 48px;
+      background-image: url("assets/little-paths-icon-atlas.png");
+      background-repeat: no-repeat;
+      background-size: 440% 550%;
+      background-position: 97.1% 4.37%;
+    }
+
+    .day-copy { min-width: 0; }
+    .day-title { font-size: 12px; font-weight: 750; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .day-sub { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+
+    .play-day {
+      width: 34px;
+      height: 34px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--coral);
+      color: var(--screen);
+      cursor: pointer;
+      font-weight: 900;
+      transition: transform 140ms ease;
+    }
+
+    .play-day:hover { transform: rotate(6deg) scale(1.06); }
+    .play-day:active { transform: scale(.88); }
+
+    .caption {
+      color: #65636a;
+      font-size: 12px;
+      letter-spacing: .04em;
+    }
+
+    .app-view {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      padding: 23px 18px 20px;
+      background: #171a2c;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(22px) scale(.97);
+      transition: opacity 240ms ease, transform 330ms cubic-bezier(.2,.8,.2,1), visibility 0s linear 330ms;
+    }
+
+    .app-view.open {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      transition-delay: 0s;
+    }
+
+    .app-head { display: flex; align-items: center; gap: 12px; padding: 7px 4px 16px; }
+    .back {
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--cream);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .app-name { font-size: 18px; font-weight: 800; }
+
+    .empty-art {
+      align-self: center;
+      justify-self: center;
+      width: 260px;
+      min-height: 270px;
+      padding: 28px 25px;
+      border-radius: 42% 58% 46% 54% / 53% 44% 56% 47%;
+      background: var(--card);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      animation: blob 7s ease-in-out infinite;
+    }
+
+    @keyframes blob {
+      0%, 100% { border-radius: 42% 58% 46% 54% / 53% 44% 56% 47%; }
+      50% { border-radius: 55% 45% 59% 41% / 43% 57% 43% 57%; }
+    }
+
+    .empty-icon {
+      width: 104px;
+      height: 112px;
+      background-image: url("assets/little-paths-icon-atlas.png");
+      background-repeat: no-repeat;
+      background-size: 440% 550%;
+    }
+
+    .empty-title { margin-top: 10px; color: var(--cream); font-size: 17px; font-weight: 800; }
+    .empty-copy { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+
+    .hidden-date {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @media (max-height: 780px) and (min-width: 520px) {
+      .phone { width: 335px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="phone" aria-label="Little Paths illustrated phone home screen">
+      <span class="side-button one"></span>
+      <span class="side-button two"></span>
+      <span class="side-button three"></span>
+
+      <div class="screen">
+        <span class="night-shape a"></span><span class="night-shape b"></span><span class="night-shape c"></span>
+        <span class="star large" style="left:12%;top:9%;animation-delay:-.8s"></span>
+        <span class="star small" style="left:29%;top:16%;animation-delay:-2.1s"></span>
+        <span class="star" style="left:71%;top:8%;animation-delay:-1.4s"></span>
+        <span class="star small" style="left:88%;top:19%;animation-delay:-3.2s"></span>
+        <span class="star" style="left:7%;top:36%;animation-delay:-2.6s"></span>
+        <span class="star large" style="left:93%;top:44%;animation-delay:-1.7s"></span>
+        <span class="star small" style="left:15%;top:66%;animation-delay:-3.8s"></span>
+        <span class="star" style="left:84%;top:72%;animation-delay:-.3s"></span>
+        <span class="star small" style="left:31%;top:91%;animation-delay:-2.9s"></span>
+        <span class="star large" style="left:76%;top:93%;animation-delay:-1.1s"></span>
+
+        <div class="status">
+          <span id="statusTime">00:10</span>
+          <span class="signals"><span class="signal-dot"></span><span class="signal-dot"></span><span class="signal-dot"></span><span class="battery"></span></span>
+        </div>
+
+        <div class="home">
+          <div class="column">
+            <section class="clock-card">
+              <div class="clock-copy">
+                <div class="time" id="heroTime">00:10</div>
+                <div class="date-line">
+                  <button class="date-button" id="dateButton" type="button">today is Fri, 11 Sep</button>
+                  <span>Battery: 31%</span><br>
+                  <span>Keep a little piece of today.</span>
+                </div>
+              </div>
+              <span class="planet-avatar" aria-hidden="true"></span>
+            </section>
+
+            <nav class="apps" aria-label="Apps">
+              <button class="app" style="--i:0" data-name="Messenger" data-pos="p00" aria-label="Open Facebook Messenger">
+                <span class="brand-art brand-messenger" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 0C5.24 0 0 4.952 0 11.64c0 3.499 1.434 6.521 3.769 8.61a.96.96 0 0 1 .323.683l.065 2.135a.96.96 0 0 0 1.347.85l2.381-1.053a.96.96 0 0 1 .641-.046A13 13 0 0 0 12 23.28c6.76 0 12-4.952 12-11.64S18.76 0 12 0m6.806 7.44c.522-.03.971.567.63 1.094l-4.178 6.457a.707.707 0 0 1-.977.208l-3.87-2.504a.44.44 0 0 0-.49.007l-4.363 3.01c-.637.438-1.415-.317-.995-.966l4.179-6.457a.706.706 0 0 1 .977-.21l3.87 2.505c.15.097.344.094.491-.007l4.362-3.008a.7.7 0 0 1 .364-.13"/></svg></span>
+              </button>
+              <button class="app" style="--i:1" data-name="Instagram" data-pos="p10" aria-label="Open Instagram">
+                <span class="brand-art brand-instagram" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.25"/><circle cx="17.45" cy="6.65" r="1.15" fill="currentColor" stroke="none"/></svg></span>
+              </button>
+              <button class="app" style="--i:2" data-name="Maps" data-pos="p20" aria-label="Open Maps"><span class="app-art p20"></span></button>
+              <button class="app" style="--i:3" data-name="Photos" data-pos="p30" aria-label="Open Photos"><span class="app-art p30"></span></button>
+              <button class="app" style="--i:4" data-name="Music" data-pos="p01" aria-label="Open Music"><span class="app-art p01"></span></button>
+              <button class="app" style="--i:5" data-name="Video" data-pos="p11" aria-label="Open Video"><span class="app-art p11"></span></button>
+              <button class="app" style="--i:6" data-name="Messages" data-pos="p21" aria-label="Open Messages"><span class="app-art p21"></span></button>
+              <button class="app" style="--i:7" data-name="Mail" data-pos="p31" aria-label="Open Mail"><span class="app-art p31"></span></button>
+              <button class="app" style="--i:8" data-name="Camera" data-pos="p02" aria-label="Open Camera"><span class="app-art p02"></span></button>
+              <button class="app" style="--i:9" data-name="Calculator" data-pos="p12" aria-label="Open Calculator"><span class="app-art p12"></span></button>
+              <button class="app" style="--i:10" data-name="Clock" data-pos="p22" aria-label="Open Clock"><span class="app-art p22"></span></button>
+              <button class="app" style="--i:11" data-name="Calendar" data-pos="p32" aria-label="Open Calendar"><span class="app-art p32"></span></button>
+              <button class="app" style="--i:12" data-name="Settings" data-pos="p03" aria-label="Open Settings"><span class="app-art p03"></span></button>
+              <button class="app" style="--i:13" data-name="Files" data-pos="p13" aria-label="Open Files"><span class="app-art p13"></span></button>
+              <button class="app" style="--i:14" data-name="Weather" data-pos="p23" aria-label="Open Weather"><span class="app-art p23"></span></button>
+              <button class="app" style="--i:15" data-name="Notes" data-pos="p33" aria-label="Open Notes"><span class="app-art p33"></span></button>
+              <button class="app" style="--i:16" data-name="Phone" data-pos="p04" aria-label="Open Phone"><span class="app-art p04"></span></button>
+              <button class="app" style="--i:17" data-name="Browser" data-pos="p14" aria-label="Open Browser"><span class="app-art p14"></span></button>
+              <button class="app" style="--i:18" data-name="Wallet" data-pos="p24" aria-label="Open Wallet"><span class="app-art p24"></span></button>
+              <button class="app" style="--i:19" data-name="Sounds" data-pos="p34" aria-label="Open Sounds"><span class="app-art p34"></span></button>
+            </nav>
+
+            <section class="day-card">
+              <span class="day-flower" aria-hidden="true"></span>
+              <div class="day-copy">
+                <div class="day-title" id="dayTitle">Friday, 11 September</div>
+                <div class="day-sub">142 messages · 3.2 km · 18 photos</div>
+              </div>
+              <button class="play-day" type="button" aria-label="Play the day">▶</button>
+            </section>
+          </div>
+        </div>
+
+        <section class="app-view" id="appView" aria-hidden="true">
+          <header class="app-head">
+            <button class="back" id="backButton" type="button" aria-label="Back to home">‹</button>
+            <span class="app-name" id="appName">App</span>
+          </header>
+          <div class="empty-art">
+            <div>
+              <div class="empty-icon p00" id="emptyIcon"></div>
+              <div class="empty-title" id="emptyTitle">A little piece of this day</div>
+              <div class="empty-copy" id="emptyCopy">This illustrated shell is ready for your archive.</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <div class="caption">Little Paths · illustrated home study</div>
+  </main>
+
+  <input class="hidden-date" id="datePicker" type="date" value="2026-09-11" aria-label="Choose a day">
+
+  <script>
+    const dateButton = document.getElementById('dateButton');
+    const datePicker = document.getElementById('datePicker');
+    const dayTitle = document.getElementById('dayTitle');
+    const appView = document.getElementById('appView');
+    const appName = document.getElementById('appName');
+    const emptyIcon = document.getElementById('emptyIcon');
+    const emptyTitle = document.getElementById('emptyTitle');
+    const emptyCopy = document.getElementById('emptyCopy');
+    const backButton = document.getElementById('backButton');
+
+    dateButton.addEventListener('click', () => {
+      if (datePicker.showPicker) datePicker.showPicker();
+      else datePicker.click();
+    });
+
+    datePicker.addEventListener('change', () => {
+      if (!datePicker.value) return;
+      const [year, month, day] = datePicker.value.split('-').map(Number);
+      const date = new Date(year, month - 1, day);
+      dateButton.textContent = 'today is ' + date.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+      dayTitle.textContent = date.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+    });
+
+    document.querySelectorAll('.app').forEach((button) => {
+      button.addEventListener('click', () => {
+        const name = button.dataset.name;
+        const pos = button.dataset.pos;
+        appName.textContent = name;
+        emptyTitle.textContent = name === 'Maps' ? 'Where did the day take you?' : `A little piece of ${name}`;
+        emptyCopy.textContent = ['Messenger', 'Instagram', 'Maps', 'Photos'].includes(name)
+          ? 'This is where your archive for the selected day will appear.'
+          : 'A quiet decorative app in this home-screen study.';
+        emptyIcon.className = `empty-icon ${pos}`;
+        appView.classList.add('open');
+        appView.setAttribute('aria-hidden', 'false');
+        backButton.focus();
+      });
+    });
+
+    function closeApp() {
+      appView.classList.remove('open');
+      appView.setAttribute('aria-hidden', 'true');
+    }
+
+    backButton.addEventListener('click', closeApp);
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeApp();
+    });
+  </script>
+</body>
+</html>
