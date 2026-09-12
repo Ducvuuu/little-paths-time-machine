@@ -8,7 +8,7 @@ This repository currently contains a visual and interaction prototype. It does n
 
 Open `index.html` in a modern browser. No build step or local server is currently required.
 
-The prominent Windback card opens an illustrated calendar. The user can browse months, jump directly to a year, choose an exact date, and preview which apps will contain memories through colored day markers. The other app icons open illustrated placeholder views. Messenger and Instagram use recognizable brand silhouettes, while the surrounding icon family uses original generated illustration.
+The prominent Windback card opens an illustrated calendar. The user can browse months, jump directly to a year, choose an exact date, and preview which apps will contain memories through colored day markers. The lower home-screen widget is an illustrated Spotify player with working track and playback controls. The other app icons open illustrated placeholder views. Messenger and Instagram use recognizable brand silhouettes, while the surrounding icon family uses original generated illustration.
 
 ## Project documentation
 

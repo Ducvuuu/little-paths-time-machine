@@ -197,7 +197,7 @@ A standalone home-screen study containing:
 - generated illustrated artwork for the remaining app concepts
 - subtle idle motion and press feedback
 - placeholder app-opening transitions
-- a compact day summary card
+- a compact illustrated Spotify widget with playback and track controls
 - reduced-motion support
 
 The app views currently contain placeholder copy. They do not load real conversations, locations, or photos.
@@ -229,6 +229,7 @@ The original screenshot used as a composition reference. Its narrow centered gri
 - Added a prominent Windback app that replaces the generic header widget and controls the global date.
 - Generated a standalone Windback icon so its art does not depend on sprite-atlas cropping.
 - Reworked Windback around an illustrated month calendar rather than a timeline scrubber.
+- Replaced the lower day-summary card with a recognizable illustrated Spotify player.
 - Created this dedicated local Git repository and formal project brief.
 
 ## 12. What has not been built

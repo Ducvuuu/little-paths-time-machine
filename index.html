@@ -146,7 +146,7 @@
     .column { width: 258px; }
 
     .windback-card,
-    .day-card {
+    .spotify-card {
       background: var(--card);
       border-radius: 22px;
     }
@@ -289,44 +289,73 @@
     .p04 { background-position: 4.62% 94.2%; } .p14 { background-position: 34.84% 94.2%; }
     .p24 { background-position: 66.56% 94.2%; } .p34 { background-position: 97.1% 94.2%; }
 
-    .day-card {
-      min-height: 82px;
+    .spotify-card {
+      min-height: 86px;
       margin-top: 17px;
-      padding: 12px 15px;
+      padding: 10px 11px 10px 7px;
       display: grid;
-      grid-template-columns: 45px 1fr auto;
+      grid-template-columns: 62px 1fr;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       animation: card-drift 8.5s ease-in-out -2s infinite;
     }
 
-    .day-flower {
-      width: 45px;
-      height: 48px;
+    .spotify-cover {
+      width: 62px;
+      height: 66px;
       background-image: url("assets/little-paths-icon-atlas.png");
       background-repeat: no-repeat;
       background-size: 440% 550%;
-      background-position: 97.1% 4.37%;
+      background-position: 4.62% 26.15%;
+      transform-origin: center;
     }
 
-    .day-copy { min-width: 0; }
-    .day-title { font-size: 12px; font-weight: 750; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .day-sub { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+    .spotify-card.playing .spotify-cover { animation: record-wobble 3.8s ease-in-out infinite; }
 
-    .play-day {
-      width: 34px;
-      height: 34px;
+    @keyframes record-wobble {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(3deg) translateY(-1px); }
+    }
+
+    .spotify-copy { min-width: 0; }
+    .spotify-brand { display: flex; align-items: center; gap: 5px; color: #98c69d; font-size: 8px; font-weight: 850; letter-spacing: .09em; }
+    .spotify-brand svg { width: 12px; height: 12px; fill: currentColor; }
+    .spotify-track { margin-top: 4px; overflow: hidden; color: var(--cream); font-size: 11px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .spotify-artist { margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+
+    .spotify-bottom { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; margin-top: 7px; }
+    .spotify-progress { position: relative; height: 5px; overflow: hidden; border-radius: 5px; background: #393e55; }
+    .spotify-progress span { position: absolute; inset: 0 auto 0 0; width: 28%; border-radius: inherit; background: var(--coral); }
+    .spotify-card.playing .spotify-progress span { animation: song-progress 24s linear infinite; }
+
+    @keyframes song-progress {
+      from { width: 28%; }
+      to { width: 100%; }
+    }
+
+    .spotify-controls { display: flex; align-items: center; gap: 4px; }
+    .spotify-control {
+      width: 22px;
+      height: 22px;
       border: 0;
       border-radius: 50%;
-      background: var(--coral);
-      color: var(--screen);
+      padding: 0;
+      background: transparent;
+      color: #c8cad5;
       cursor: pointer;
+      font-size: 9px;
       font-weight: 900;
-      transition: transform 140ms ease;
     }
 
-    .play-day:hover { transform: rotate(6deg) scale(1.06); }
-    .play-day:active { transform: scale(.88); }
+    .spotify-control.play {
+      width: 26px;
+      height: 26px;
+      background: var(--coral);
+      color: var(--screen);
+    }
+
+    .spotify-control:hover { color: #ffffff; transform: translateY(-1px); }
+    .spotify-control:active { transform: scale(.86); }
 
     .caption {
       color: #65636a;
@@ -702,13 +731,24 @@
               <button class="app" style="--i:19" data-name="Sounds" data-pos="p34" aria-label="Open Sounds"><span class="app-art p34"></span></button>
             </nav>
 
-            <section class="day-card">
-              <span class="day-flower" aria-hidden="true"></span>
-              <div class="day-copy">
-                <div class="day-title" id="dayTitle">Friday, 11 September</div>
-                <div class="day-sub">142 messages · 3.2 km · 18 photos</div>
+            <section class="spotify-card" id="spotifyCard" aria-label="Spotify now playing">
+              <span class="spotify-cover" aria-hidden="true"></span>
+              <div class="spotify-copy">
+                <div class="spotify-brand">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+                  <span>SPOTIFY</span>
+                </div>
+                <div class="spotify-track" id="spotifyTrack">God's Gonna Cut You Down</div>
+                <div class="spotify-artist" id="spotifyArtist">Marilyn Manson</div>
+                <div class="spotify-bottom">
+                  <div class="spotify-progress" aria-hidden="true"><span></span></div>
+                  <div class="spotify-controls">
+                    <button class="spotify-control" id="spotifyPrevious" type="button" aria-label="Previous track">◀</button>
+                    <button class="spotify-control play" id="spotifyPlay" type="button" aria-label="Play"><span id="spotifyPlayIcon">▶</span></button>
+                    <button class="spotify-control" id="spotifyNext" type="button" aria-label="Next track">▶</button>
+                  </div>
+                </div>
               </div>
-              <button class="play-day" type="button" aria-label="Play the day">▶</button>
             </section>
           </div>
         </div>
@@ -798,7 +838,6 @@
 
   <script>
     const datePicker = document.getElementById('datePicker');
-    const dayTitle = document.getElementById('dayTitle');
     const windbackHomeDate = document.getElementById('windbackHomeDate');
     const windbackChosenDate = document.getElementById('windbackChosenDate');
     const windbackLauncher = document.getElementById('windbackLauncher');
@@ -823,11 +862,25 @@
     const emptyTitle = document.getElementById('emptyTitle');
     const emptyCopy = document.getElementById('emptyCopy');
     const backButton = document.getElementById('backButton');
+    const spotifyCard = document.getElementById('spotifyCard');
+    const spotifyTrack = document.getElementById('spotifyTrack');
+    const spotifyArtist = document.getElementById('spotifyArtist');
+    const spotifyPrevious = document.getElementById('spotifyPrevious');
+    const spotifyPlay = document.getElementById('spotifyPlay');
+    const spotifyPlayIcon = document.getElementById('spotifyPlayIcon');
+    const spotifyNext = document.getElementById('spotifyNext');
 
     const startDate = new Date(2010, 0, 1);
     const endDate = new Date();
     endDate.setHours(0, 0, 0, 0);
     const oneDay = 86400000;
+    const playlist = [
+      { title: "God's Gonna Cut You Down", artist: 'Marilyn Manson' },
+      { title: 'Space Song', artist: 'Beach House' },
+      { title: 'Fade Into You', artist: 'Mazzy Star' }
+    ];
+    let currentTrack = 0;
+    let spotifyIsPlaying = false;
 
     function parseLocalDate(value) {
       const [year, month, day] = value.split('-').map(Number);
@@ -887,7 +940,6 @@
       const full = selectedDate.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
       windbackHomeDate.textContent = compact;
       windbackChosenDate.textContent = full;
-      dayTitle.textContent = compact;
       datePicker.value = toLocalIso(selectedDate);
       if (animate) animateWindback();
       renderCalendar(animate);
@@ -1026,6 +1078,30 @@
     yearPickerButton.addEventListener('click', openYearPicker);
     yearClose.addEventListener('click', closeYearPicker);
     todayButton.addEventListener('click', () => updateSelectedDate(endDate));
+
+    function renderSpotifyTrack(restartProgress = false) {
+      spotifyTrack.textContent = playlist[currentTrack].title;
+      spotifyArtist.textContent = playlist[currentTrack].artist;
+      if (restartProgress && spotifyIsPlaying) {
+        spotifyCard.classList.remove('playing');
+        requestAnimationFrame(() => spotifyCard.classList.add('playing'));
+      }
+    }
+
+    function changeSpotifyTrack(amount) {
+      currentTrack = (currentTrack + amount + playlist.length) % playlist.length;
+      renderSpotifyTrack(true);
+    }
+
+    spotifyPlay.addEventListener('click', () => {
+      spotifyIsPlaying = !spotifyIsPlaying;
+      spotifyCard.classList.toggle('playing', spotifyIsPlaying);
+      spotifyPlayIcon.textContent = spotifyIsPlaying ? 'Ⅱ' : '▶';
+      spotifyPlay.setAttribute('aria-label', spotifyIsPlaying ? 'Pause' : 'Play');
+    });
+
+    spotifyPrevious.addEventListener('click', () => changeSpotifyTrack(-1));
+    spotifyNext.addEventListener('click', () => changeSpotifyTrack(1));
 
     datePicker.addEventListener('change', () => {
       if (!datePicker.value) return;
